@@ -26,6 +26,11 @@ module.exports = {
   module: {
     rules: [
       {
+        test: /\.css$/,
+        include: /node_modules/,
+        use: ["style-loader", "css-loader"],
+      },
+      {
         test: /\.scss$/,
         use: ["style-loader", "css-loader", "sass-loader"],
       },
@@ -48,7 +53,7 @@ module.exports = {
 
   plugins: [
     new HtmlWebpackPlugin({
-      title: "Webpack Template",
+      title: "TheDoList",
       filename: "index.html",
       template: "src/template.html",
     }),

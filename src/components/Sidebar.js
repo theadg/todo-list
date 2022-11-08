@@ -6,8 +6,6 @@ import editIcon from "../assets/edit.png";
 import deleteIcon from "../assets/delete.png";
 import ProjectSection from "./ProjectSection";
 
-import { compareAsc, format } from "date-fns";
-
 let projectList = [],
   id = 1;
 const projectGroup = document.querySelector("#projectGroup");
@@ -379,7 +377,7 @@ function createProjectItems(project) {
     // remove from dom
     ProjectInputContainer.remove();
 
-    //remove from array
+    // remove from arrays
     removeFromProjectList(project.title);
     e.stopPropagation();
   };

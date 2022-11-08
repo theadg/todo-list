@@ -1,11 +1,6 @@
 import { clearSectionContainer } from "./Sidebar";
-import {
-  compareAsc,
-  format,
-  formatISO,
-  parseISO,
-  startOfToday,
-} from "date-fns";
+import priorityIcon from "../assets/priority.svg";
+import { format, startOfToday } from "date-fns";
 
 export default function ProjectSection(project) {
   const sectionContainer = document.querySelector("#sectionContainer");
@@ -86,8 +81,9 @@ function createAddTaskBtn() {
     removeElement(".project__button--add");
 
     // show add task ui
-    sectionContainer.append(createAddTask());
+    sectionContainer.append(createAddTask(), createAddTaskOptions());
   };
+
   return projectAddTaskBtn;
 }
 
@@ -97,22 +93,39 @@ function createAddTask() {
   taskContainer.classList.add("task__container");
 
   const taskName = document.createElement("input");
-  taskName.classList.add("task__input");
+  taskName.classList.add("task__input", "task__input--title");
   taskName.placeholder = "Some Placeholder title here";
   taskName.type = "text";
 
   const taskDesc = document.createElement("textarea");
-  taskDesc.classList.add("task__input");
-  taskDesc.placeholder = "Some placeholder title here";
+  taskDesc.classList.add("task__input", "task__input--textarea");
+  taskDesc.placeholder = "Some placeholder desc here";
 
   const taskPriority = document.createElement("select");
-  taskPriority.classList.add("task__input", "task__input--select");
+  taskPriority.classList.add(
+    "task__input",
+    "task__input--select",
+    "task__input--prio"
+  );
   taskPriority.id = "taskPriority";
 
   // add priority
-  taskPriority.add(addTaskPriority("High Priority"));
-  taskPriority.add(addTaskPriority("Medium Priority"));
-  taskPriority.add(addTaskPriority("Low Priority"));
+  taskPriority.add(
+    addTaskPriority("Select Priority", "option", "disabled", "true")
+  );
+  // TODO: Add Flag Svg
+  taskPriority.add(addTaskPriority("High Priority", "option--high"));
+  taskPriority.add(addTaskPriority("Medium Priority", "option--medium"));
+  taskPriority.add(addTaskPriority("Low Priority", "option--low"));
+
+  // change color on load
+  taskPriority.onload = () => {
+    setTaskPriorityColor(taskPriority);
+  };
+
+  taskPriority.oninput = () => {
+    setTaskPriorityColor(taskPriority);
+  };
 
   const currentDate = format(startOfToday(), "yyyy-MM-dd");
   const taskDate = document.createElement("input");
@@ -130,9 +143,48 @@ function createAddTask() {
   return taskContainer;
 }
 
-function addTaskPriority(priority) {
+function addTaskPriority(
+  priority,
+  className,
+  disabled = false,
+  selected = false
+) {
   const option = document.createElement("option");
-  option.text = priority;
 
+  option.classList.add(className);
+  option.disabled = disabled;
+  option.selected = selected;
+  option.text = priority;
   return option;
+}
+
+function setTaskPriorityColor(element) {
+  console.log(element.value);
+  switch (element.value) {
+    case "High Priority":
+      element.style.color = "#d1453b";
+      break;
+    case "Medium Priority":
+      element.style.color = "#eb8909";
+      break;
+    case "Low Priority":
+      element.style.color = "#837d7d";
+  }
+}
+
+function createAddTaskOptions() {
+  const taskContainer = document.createElement("div");
+  taskContainer.classList.add("task__container", "task__container--options");
+
+  const taskAddBtn = document.createElement("button");
+  taskAddBtn.classList.add("task__button", "task__button--add");
+  taskAddBtn.textContent = "Add Task";
+
+  const taskCancelBtn = document.createElement("button");
+  taskCancelBtn.classList.add("task__button");
+  taskCancelBtn.textContent = "Cancel";
+
+  taskContainer.append(taskCancelBtn, taskAddBtn);
+
+  return taskContainer;
 }

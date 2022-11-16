@@ -1,10 +1,27 @@
-import { clearSectionContainer } from "./Sidebar";
-import { format, startOfToday } from "date-fns";
+import {
+  clearSectionContainer,
+  currentTab,
+  addAllTasks,
+  addTodayTasks,
+  addUpcomingTasks,
+} from "./Sidebar";
+import { format, startOfToday, parseISO } from "date-fns";
 import editIcon from "../assets/edit.png";
 import deleteIcon from "../assets/delete.png";
 
 let taskID = 1;
+export function createPageHeader(headerName) {
+  const sectionContainer = document.querySelector("#sectionContainer");
+  const pageHeaderTitle = document.createElement("h2");
+  pageHeaderTitle.classList.add(
+    "project__text--title",
+    "project__text--header"
+  );
+  pageHeaderTitle.textContent = headerName;
 
+  sectionContainer.append(pageHeaderTitle);
+  console.log(pageHeaderTitle);
+}
 export default function ProjectSection(project) {
   const sectionContainer = document.querySelector("#sectionContainer");
   clearSectionContainer();
@@ -26,26 +43,36 @@ export default function ProjectSection(project) {
   projectContainer.append(projectSection);
   // Project Tasks
   //   Empty
-  if (project.tasks.length === 0) {
-    // projectEmpty.append(projectAddTaskBtn);
-    projectSection.append(
-      emptyText("You have no current tasks for this project")
-    );
-    projectSection.append(createAddTaskBtn(project, projectContainer));
-  } else {
-    removeTasks();
 
-    createTaskUI(project.tasks, project, projectContainer);
-  }
+  checkTaskList(project.tasks, project, projectSection, projectContainer);
 
   sectionContainer.append(projectContainer);
   return { projectTitle };
 }
 
+function checkTaskList(tasks, project, projectSection, projectContainer) {
+  if (tasks.length === 0) {
+    // projectSection.append(
+    //   emptyText("You have no current tasks for this project")
+    // );
+    // projectSection.append(createAddTaskBtn(project, projectContainer));
+    showEmptyInbox(project, projectContainer);
+  } else {
+    removeTasks();
+
+    createTaskUI(tasks, project, projectContainer);
+  }
+}
+
+function showEmptyInbox(project, projectContainer) {
+  projectContainer.append(
+    emptyText("You have no current tasks for this project")
+  );
+  projectContainer.append(createAddTaskBtn(project, projectContainer));
+}
 export function clearProjectContainer() {
   const projectContainer = document.querySelector("#projectContainer");
   while (projectContainer.firstChild) {
-    console.log(projectContainer.firstChild);
     projectContainer.firstChild.remove();
   }
 }
@@ -59,7 +86,7 @@ export function ShowProjectContent(project, today = false, incoming = false) {
   projectSection.classList.add("project");
 
   const projectContainer = document.createElement("div");
-  projectContainer.classList.add(".project__container");
+  projectContainer.classList.add("project__container");
 
   projectSection.append(projectTitle);
   // just show the tasks here
@@ -70,7 +97,7 @@ export function ShowProjectContent(project, today = false, incoming = false) {
 }
 
 export function removeTasks() {
-  const projectContainer = document.querySelector(".project__container");
+  const projectContainer = document.querySelector("project__container");
   if (!projectContainer) return;
 
   const projectTasks = Array.from(
@@ -89,12 +116,18 @@ export function removeTasks() {
 function createTaskUI(
   tasks,
   project,
-  projectContainer = document.querySelector(".project__container"),
+  // projectContainer = document.querySelector("project__container"),
+  projectContainer,
   today = false,
   incoming = false
 ) {
-  console.log("PROJECT TASK UI", projectContainer);
-  createTaskContainer(tasks, project, projectContainer, today, incoming);
+  createTaskContainer(
+    sortTasksAscending(tasks),
+    project,
+    projectContainer,
+    today,
+    incoming
+  );
   projectContainer.append(createAddTaskBtnRow(project, projectContainer));
   sectionContainer.append(projectContainer);
 }
@@ -126,7 +159,7 @@ function createTaskContainer(
 function createTaskBlock(
   element,
   project,
-  projectContainer = document.querySelector(".project__container")
+  projectContainer = document.querySelector("project__container")
 ) {
   const taskContainer = document.createElement("div");
   taskContainer.classList.add("task__container", "task__container--item");
@@ -194,23 +227,34 @@ function createTaskBlock(
 
     // App Logic
     element.completed = true;
-    console.log(element);
+    // console.log(element);
   };
 
   taskDelete.onclick = () => {
+    const projectSection = document.querySelector("#sectionContainer");
     // remove from DOM
     taskContainer.remove();
 
     // App Logic
     const currentTask = (task) => task.id === element.id;
+
     const currentIndex = project.tasks.findIndex(currentTask);
-    console.log(project.tasks, currentIndex);
+    // console.log(project.tasks, "CURRENT INDEX", currentIndex);
+    // console.log("ELEMENT ID:", element.id);
+    // console.log("CURRENT TASK:", currentTask);
 
     // remove from app
     project.tasks.splice(currentIndex, 1);
+
+    if (project.tasks.length === 0) {
+      // show here
+      removeElement("#addProjTask");
+      // showEmptyInbox(projectSection);
+      showEmptyInbox(project, projectSection, projectContainer);
+    }
   };
 
-  console.log(projectContainer);
+  // console.log(projectContainer);
   projectContainer.append(taskContainer);
 }
 
@@ -229,10 +273,6 @@ function emptyText(text) {
 }
 
 function removeElement(element) {
-  // element.forEach((element) => {
-  //   const projectElement = document.querySelector(`${element}`);
-  //   projectElement.remove();
-  // });
   document.querySelector(element).remove();
 }
 
@@ -252,13 +292,14 @@ function createAddTaskBtn(project, projectContainer) {
     removeElement(".project__button--add");
     // show add task ui
 
-    projectContainer.append(createAddTask(project));
+    // projectContainer.append(createAddTask(project, projectContainer));
+    createAddTask(project, projectContainer);
   };
 
   return projectAddTaskBtn;
 }
 
-function createAddTask(project) {
+function createAddTask(project, projectContainer) {
   // container
   const taskContainer = document.createElement("div");
   taskContainer.classList.add("task__container");
@@ -315,11 +356,16 @@ function createAddTask(project) {
 
   const mainTaskContainer = document.createElement("div");
   mainTaskContainer.id = "inputContainer";
-  mainTaskContainer.append(taskContainer, createAddTaskOptions(project));
+  mainTaskContainer.append(
+    taskContainer,
+    createAddTaskOptions(project, projectContainer)
+  );
 
+  projectContainer.append(mainTaskContainer);
   return mainTaskContainer;
 
   function createAddTaskOptions(project, projectContainer) {
+    console.log("PROJECT CONTAINER HERE:", projectContainer);
     const taskContainer = document.createElement("div");
     taskContainer.classList.add("task__container", "task__container--options");
 
@@ -341,8 +387,10 @@ function createAddTask(project) {
       removeElement("#addProjTask");
       removeTasks();
 
+      console.log("TASK ADD CURRENT TAB: ", currentTab);
       // DOM Logic here
-      createTaskUI(project.tasks, project, projectContainer, false, false);
+      // createTaskUI(project.tasks, project, projectContainer, false, false);
+      showCurrentTabContent();
     };
 
     const taskCancelBtn = document.createElement("button");
@@ -453,8 +501,8 @@ function updateTask(element, project, projectContainer) {
 
       removeTasks();
 
-      createTaskUI(project.tasks, project, projectContainer);
-      console.log(element);
+      showCurrentTabContent();
+      // createTaskUI(project.tasks, project, projectContainer);
     };
 
     const taskCancelBtn = document.createElement("button");
@@ -508,7 +556,7 @@ function addToProjectTasks(
   prio,
   date,
   input,
-  projectContainer = document.querySelector(".project__container")
+  projectContainer = document.querySelector("project__container")
 ) {
   const inputElements = [name, prio, date];
   let valid = true;
@@ -554,7 +602,7 @@ function addToProjectTasks(
 
 function createAddTaskBtnRow(
   project,
-  projectContainer = document.querySelector(".project__container")
+  projectContainer = document.querySelector("project__container")
 ) {
   const addTaskBtnRow = document.createElement("button");
   addTaskBtnRow.classList.add("sidebar__button--add");
@@ -565,11 +613,11 @@ function createAddTaskBtnRow(
   addTaskBtnRow.id = "addProjTask";
   addTaskBtnRow.append(addProjectIcon);
 
-  console.log(projectContainer);
+  // console.log(projectContainer);
   // Add functionality
   addTaskBtnRow.onclick = () => {
     addTaskBtnRow.remove();
-    projectContainer.append(createAddTask(project));
+    createAddTask(project, projectContainer);
   };
 
   return addTaskBtnRow;
@@ -585,8 +633,37 @@ function updateCurrentTask(element, name, desc, prio, date) {
   return element;
 }
 
-// TODO: sort by date
+// TODO: create empty tabs for projects
 
-// TODO: fix bug on Today Edit Save
-// TODO: fix save task bug
-// TODO: add task bug
+function sortTasksAscending(tasks) {
+  console.log("before");
+  console.table(tasks);
+  // App
+
+  const sortedTasks = tasks.sort((a, b) => parseISO(a.date) - parseISO(b.date));
+  // const sortedTasks = tasks.sort((a, b) =>
+  //   compareAsc(toDate(a.date), toDate(b.date))
+  // );
+
+  console.log("after");
+  console.table(sortedTasks);
+
+  return sortedTasks;
+}
+
+function showCurrentTabContent() {
+  console.log("SHOWCURRENTTABCONTENT", currentTab);
+  if (currentTab === "Inbox") {
+    addAllTasks();
+  } else if (currentTab === "Today") {
+    addTodayTasks();
+  } else if (currentTab === "Upcoming") {
+    addUpcomingTasks();
+  }
+}
+
+// TODO: Have General Tasks which is yung uncategorized tasks
+// TODO: add number of tasks(?)
+
+// TODO: RESPONSIVENESS
+// TODO: INTERACTIONS

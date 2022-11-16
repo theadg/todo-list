@@ -99,11 +99,15 @@ body {
       height: fit-content;
       width: 100%;
       padding-bottom: 0.25em;
-      border-bottom: solid 5px #e4e4e4;
+      border-bottom: solid 1px #e4e4e4;
     }
 
     &--prompt {
       text-align: center;
+    }
+
+    &--header {
+      font-size: 1.5rem;
     }
   }
 
@@ -122,6 +126,7 @@ body {
       background-color: $color-primary;
       color: white;
       font-size: 1.15rem;
+      margin: 0 auto;
 
       &:hover {
         background-color: #bd453a;
@@ -129,7 +134,12 @@ body {
       }
     }
   }
+
+  &__container {
+    padding-left: 1.5em;
+  }
 }
+
 // TODO: adjust margin-left
 .navbar {
   @include flexCenter();

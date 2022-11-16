@@ -5,7 +5,7 @@ body {
   font-family: Inter, sans-serif;
   position: relative;
   height: 100vh;
-  overflow: hidden;
+  overflow-x: hidden;
 }
 
 @mixin flexCenter() {
@@ -18,6 +18,49 @@ body {
   background-color: #e9e8e8;
 }
 
+@mixin buttonStyling() {
+  width: 35%;
+  appearance: none;
+  background: transparent;
+  border: 1px solid #bcb3b3;
+  border-radius: 10px;
+  padding: 0.4em;
+  transition: ease-in-out background-color 0.25s;
+  &:hover {
+    @include hover();
+  }
+}
+
+@mixin buttonAddTaskStyling() {
+  @include flexCenter();
+  justify-content: flex-end;
+  flex-direction: row-reverse;
+  gap: 1rem;
+  background-color: transparent;
+  border: none;
+  padding: 1rem;
+  color: #837d7d;
+  width: 100%;
+  transition: background-color 0.5s, color 0.5s;
+  border-radius: 10px;
+  &:hover {
+    @include hover();
+    color: $color-primary;
+  }
+}
+
+@mixin buttonPrimaryStyling {
+  background-color: $color-primary;
+  color: white;
+  border-color: $color-primary;
+  opacity: 1;
+  &:hover {
+    background-color: #bd453a;
+  }
+  &:disabled {
+    opacity: 0.5;
+  }
+}
 #container {
   height: 100vh;
   width: 100%;
@@ -63,6 +106,7 @@ body {
       text-align: center;
     }
   }
+
   &__button {
     appearance: none;
     border: none;
@@ -160,32 +204,9 @@ body {
   }
 
   &__button {
-    width: 35%;
-    appearance: none;
-    background: transparent;
-    border: 1px solid #bcb3b3;
-    border-radius: 10px;
-    padding: 0.4em;
-    transition: ease-in-out background-color 0.25s;
-    &:hover {
-      @include hover();
-    }
+    @include buttonStyling();
     &--add {
-      @include flexCenter();
-      justify-content: flex-end;
-      flex-direction: row-reverse;
-      gap: 1rem;
-      background-color: transparent;
-      border: none;
-      padding: 1rem;
-      color: #837d7d;
-      width: 100%;
-      transition: background-color 0.5s, color 0.5s;
-      border-radius: 10px;
-      &:hover {
-        @include hover();
-        color: $color-primary;
-      }
+      @include buttonAddTaskStyling();
     }
 
     &--container {
@@ -195,17 +216,7 @@ body {
     }
 
     &--primary {
-      background-color: $color-primary;
-      color: white;
-      border-color: $color-primary;
-      opacity: 1;
-      &:hover {
-        background-color: #bd453a;
-      }
-
-      &:disabled {
-        opacity: 0.5;
-      }
+      @include buttonPrimaryStyling();
     }
   }
 
@@ -255,18 +266,40 @@ body {
   opacity: 0;
 }
 
+// TODO: Finalize Styling
 .task {
   &__container {
     display: flex;
     flex-direction: column;
-    border: 2px solid black;
+    border: 2px solid #d7d5d5;
     border-radius: 10px;
     padding: 8px 16px;
+    gap: 0.75em;
 
     &--select {
       display: flex;
       border: none;
       gap: 2em;
+    }
+
+    &--options {
+      flex-direction: row;
+      border: none;
+      justify-content: flex-end;
+      gap: 1em;
+      padding: 8px 0;
+    }
+
+    &--item {
+      border: none;
+      border-radius: 0;
+      border-bottom: 1px solid #d7d5d5;
+      flex-direction: row;
+      padding: 16px 0;
+    }
+
+    &--text {
+      width: 100%;
     }
   }
 
@@ -274,34 +307,170 @@ body {
     appearance: none;
     border: none;
     outline: none;
-    padding: 8px;
+    padding: 2px;
+    border-radius: 10px;
+    border-color: #bcb3b3;
 
+    &--title {
+      margin: 0;
+      font-size: 1.15rem;
+      font-weight: 600;
+      border-bottom: 3px solid white;
+      border-radius: 0;
+
+      &::placeholder {
+        @extend .task__input--title;
+      }
+    }
+
+    &--name {
+      padding: 0 0 0 8px;
+      @extend .task__input--title;
+    }
     &--select {
-      border: 1px solid #837d7d;
-      min-width: 150px;
-      max-width: 150px;
+      border: 2px solid #d7d5d5;
+      padding-right: 1em;
+      font-size: 1em;
+    }
+
+    &--prio {
+      padding-left: 2em;
+    }
+
+    &--textarea {
+      color: #837d7d;
+      height: 80px;
+      resize: none;
+    }
+
+    &--desc {
+      color: #837d7d;
+      height: auto;
+      padding: 8px;
+      margin: 0;
+    }
+    &--invalid {
+      border-color: #d1453b;
+    }
+
+    &--shake {
+      animation: horizontal-shaking 0.5s;
+    }
+
+    &--checkbox {
+      height: 1.15em;
+      width: 1.35em;
+      border-radius: 20px;
+      background: #faeceb;
+      border: 2px solid #d1453b;
+
+      &:checked,
+      &:hover {
+        cursor: pointer;
+        &::before {
+          content: "✔";
+          color: #d1453b;
+          display: flex;
+          height: 100%;
+          font-size: 10px;
+          align-items: center;
+          justify-content: center;
+          transform: all ease-in;
+        }
+      }
+    }
+  }
+
+  &__button {
+    @include buttonStyling();
+    width: 20%;
+    &--add {
+      @include buttonPrimaryStyling();
+    }
+  }
+
+  &__option {
+    &--icon {
+      font-family: "Material Symbols Outlined";
     }
   }
 }
-
+input[type="checkbox"] {
+  appearance: none;
+  margin-top: 2px;
+}
 input[type="date"] {
   display: flex;
   flex-direction: row-reverse;
-  gap: 1rem;
+  padding-left: 12px;
+  gap: 0.35em;
   color: #249442;
+
+  &::-webkit-calendar-picker-indicator {
+    display: block;
+    background: url(../assets/calendar.svg) no-repeat;
+    border-width: thin;
+  }
+
+  &:disabled {
+    background: url(../assets/calendar.svg) no-repeat;
+    background-position: 0.75em center;
+  }
 }
 
+// input[type="date"]::-webkit-calendar-picker-indicator {
+//   opacity: 1;
+//   display: block;
+//   background: url(../assets/calendar.svg) no-repeat;
+//   border-width: thin;
+// }
+
 select {
-  background-image: url(https://coothead.co.uk/images/world.png);
+  background-image: url("../assets/priority.svg");
   background-repeat: no-repeat;
-  background-size: 0.8em auto;
+
   background-position: 0.4em center;
   font-size: 1.5em;
+  appearance: none;
+  color: #837d7d;
+
+  option {
+    appearance: none;
+  }
+
+  &:disabled {
+    opacity: 1;
+  }
 }
-input[type="date"]::-webkit-calendar-picker-indicator {
-  background-color: red;
-  opacity: 1;
-  display: block;
-  background: url(../assets/calendar.svg) no-repeat;
-  border-width: thin;
+
+.option {
+  background-image: url("../assets/priority.svg");
+  background-position: 0.4em center;
+  &--high {
+    color: #d1453b;
+  }
+
+  &--medium {
+    color: #eb8909;
+  }
 }
+
+@keyframes horizontal-shaking {
+  0% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(5px);
+  }
+  50% {
+    transform: translateX(-5px);
+  }
+  75% {
+    transform: translateX(5px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+// TODO Style the UI

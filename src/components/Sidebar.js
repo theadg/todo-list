@@ -4,9 +4,11 @@ import upcomingIcon from "../assets/upcoming.png";
 import projectIcon from "../assets/project.png";
 import editIcon from "../assets/edit.png";
 import deleteIcon from "../assets/delete.png";
-import ProjectSection from "./ProjectSection";
-
-import { compareAsc, format } from "date-fns";
+import ProjectSection, {
+  ShowProjectContent,
+  removeTasks,
+} from "./ProjectSection";
+import { addDays, format } from "date-fns";
 
 let projectList = [],
   id = 1;
@@ -32,7 +34,9 @@ function sideBarItem(icon, name, id) {
 // Creates the sidebar items
 function createSideBarItems() {
   const inbox = sideBarItem(inboxIcon, "Inbox", "inbox");
+  // TODO Create Today Section
   const today = sideBarItem(todayIcon, "Today", "upcoming");
+  // TODO Create Upcoming Section
   const upcoming = sideBarItem(upcomingIcon, "Upcoming", "upcoming");
 
   const taskGroup = document.createElement("div");
@@ -42,9 +46,43 @@ function createSideBarItems() {
   projectGroup.id = "projectGroup";
   createSideBarProject(projectGroup);
 
+  inbox.onclick = () => {
+    addAllTasks();
+  };
+
+  today.onclick = () => {
+    addTodayTasks();
+  };
+
+  upcoming.onclick = () => {
+    addUpcomingTasks();
+  };
   return [taskGroup, projectGroup];
 }
 
+function addAllTasks() {
+  clearSectionContainer();
+  removeTasks();
+  projectList.forEach((project) => {
+    ShowProjectContent(project);
+  });
+}
+
+function addTodayTasks() {
+  clearSectionContainer();
+  removeTasks();
+  projectList.forEach((project) => {
+    ShowProjectContent(project, true, false);
+  });
+}
+
+function addUpcomingTasks() {
+  clearSectionContainer();
+  removeTasks();
+  projectList.forEach((project) => {
+    ShowProjectContent(project, false, true);
+  });
+}
 // Approve
 // Creates the Project Section of the Sidebar
 function createSideBarProject(projectGroup) {
@@ -205,20 +243,42 @@ function addProject(projName) {
     Id: id,
     title: projName,
     tasks: [
-      // {
-      //   name: "Testing Max",
-      //   desc: "Testing Desc",
-      //   id: id,
-      //   date: format(new Date(2022, 12, 14), "yyyy-MM-dd"),
-      //   // date: new Date("2022-12-14"),
-      // },
-      // {
-      //   name: "Testing Max2",
-      //   desc: "Testing Desc2",
-      //   id: id,
-      //   // date: new Date("2022-12-14"),
-      //   date: format(new Date(2022, 12, 14), "yyyy-MM-dd"),
-      // },
+      {
+        name: "TASK 1",
+        desc: "DESC 1",
+        prio: "High Priority",
+        date: format(new Date(), "yyyy-MM-dd"),
+      },
+      {
+        name: "TASK 2",
+        desc: "DESC 2",
+        prio: "High Priority",
+        date: format(new Date(), "yyyy-MM-dd"),
+      },
+      {
+        name: "TASK 3",
+        desc: "DESC 3",
+        prio: "High Priority",
+        date: format(new Date(), "yyyy-MM-dd"),
+      },
+      {
+        name: "TASK 4",
+        desc: "DESC 4",
+        prio: "High Priority",
+        date: format(addDays(new Date(), 10), "yyyy-MM-dd"),
+      },
+      {
+        name: "TASK 5",
+        desc: "DESC 5",
+        prio: "High Priority",
+        date: format(addDays(new Date(), 10), "yyyy-MM-dd"),
+      },
+      {
+        name: "TASK 6",
+        desc: "DESC 6",
+        prio: "High Priority",
+        date: format(addDays(new Date(), 10), "yyyy-MM-dd"),
+      },
     ],
     section: (project) => {
       ProjectSection(project);
@@ -356,14 +416,14 @@ function createProjectItems(project) {
   ProjectEdit.onclick = (e) => {
     // removing dom elements
 
-    removeItemfromDOM(".sidebar__button--add");
+    // removeItemfromDOM(".sidebar__button--add");
+
     const sideBarItems = Array.from(
       document.querySelectorAll(".sidebar__input--container")
     );
     const currentItem = sideBarItems.find(
       (item) => item.textContent === project.title
     );
-
     projectGroup.insertBefore(
       updateProjectInput(project.title, project.Id),
       currentItem
@@ -379,11 +439,11 @@ function createProjectItems(project) {
     // remove from dom
     ProjectInputContainer.remove();
 
-    //remove from array
+    // remove from arrays
     removeFromProjectList(project.title);
     e.stopPropagation();
   };
-  const sectionContainer = document.querySelector("#sectionContainer");
+
   ProjectInputContainer.onclick = () => {
     // Clear Elements from Section container before adding new elements
 
@@ -402,7 +462,9 @@ function removeItemfromDOM(item) {
 }
 
 export function clearSectionContainer() {
+  const sectionContainer = document.querySelector("#sectionContainer");
   while (sectionContainer.firstChild) {
-    sectionContainer.removeChild(sectionContainer.firstChild);
+    console.log(sectionContainer.firstChild);
+    sectionContainer.firstChild.remove();
   }
 }

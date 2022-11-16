@@ -5,7 +5,7 @@ body {
   font-family: Inter, sans-serif;
   position: relative;
   height: 100vh;
-  // overflow: hidden;
+  overflow-x: hidden;
 }
 
 @mixin flexCenter() {
@@ -274,6 +274,7 @@ body {
     border: 2px solid #d7d5d5;
     border-radius: 10px;
     padding: 8px 16px;
+    gap: 0.75em;
 
     &--select {
       display: flex;
@@ -288,36 +289,95 @@ body {
       gap: 1em;
       padding: 8px 0;
     }
+
+    &--item {
+      border: none;
+      border-radius: 0;
+      border-bottom: 1px solid #d7d5d5;
+      flex-direction: row;
+      padding: 16px 0;
+    }
+
+    &--text {
+      width: 100%;
+    }
   }
 
   &__input {
     appearance: none;
     border: none;
     outline: none;
-    padding: 8px;
+    padding: 2px;
     border-radius: 10px;
     border-color: #bcb3b3;
 
     &--title {
+      margin: 0;
       font-size: 1.15rem;
       font-weight: 600;
+      border-bottom: 3px solid white;
+      border-radius: 0;
+
       &::placeholder {
         @extend .task__input--title;
       }
     }
 
+    &--name {
+      padding: 0 0 0 8px;
+      @extend .task__input--title;
+    }
     &--select {
       border: 2px solid #d7d5d5;
       padding-right: 1em;
+      font-size: 1em;
     }
 
     &--prio {
       padding-left: 2em;
     }
+
     &--textarea {
       color: #837d7d;
       height: 80px;
       resize: none;
+    }
+
+    &--desc {
+      color: #837d7d;
+      height: auto;
+      padding: 8px;
+      margin: 0;
+    }
+    &--invalid {
+      border-color: #d1453b;
+    }
+
+    &--shake {
+      animation: horizontal-shaking 0.5s;
+    }
+
+    &--checkbox {
+      height: 1.15em;
+      width: 1.35em;
+      border-radius: 20px;
+      background: #faeceb;
+      border: 2px solid #d1453b;
+
+      &:checked,
+      &:hover {
+        cursor: pointer;
+        &::before {
+          content: "✔";
+          color: #d1453b;
+          display: flex;
+          height: 100%;
+          font-size: 10px;
+          align-items: center;
+          justify-content: center;
+          transform: all ease-in;
+        }
+      }
     }
   }
 
@@ -335,21 +395,35 @@ body {
     }
   }
 }
-
+input[type="checkbox"] {
+  appearance: none;
+  margin-top: 2px;
+}
 input[type="date"] {
   display: flex;
   flex-direction: row-reverse;
-  gap: 1rem;
+  padding-left: 12px;
+  gap: 0.35em;
   color: #249442;
+
+  &::-webkit-calendar-picker-indicator {
+    display: block;
+    background: url(../assets/calendar.svg) no-repeat;
+    border-width: thin;
+  }
+
+  &:disabled {
+    background: url(../assets/calendar.svg) no-repeat;
+    background-position: 0.75em center;
+  }
 }
 
-input[type="date"]::-webkit-calendar-picker-indicator {
-  background-color: red;
-  opacity: 1;
-  display: block;
-  background: url(../assets/calendar.svg) no-repeat;
-  border-width: thin;
-}
+// input[type="date"]::-webkit-calendar-picker-indicator {
+//   opacity: 1;
+//   display: block;
+//   background: url(../assets/calendar.svg) no-repeat;
+//   border-width: thin;
+// }
 
 select {
   background-image: url("../assets/priority.svg");
@@ -363,20 +437,40 @@ select {
   option {
     appearance: none;
   }
+
+  &:disabled {
+    opacity: 1;
+  }
 }
 
 .option {
+  background-image: url("../assets/priority.svg");
+  background-position: 0.4em center;
   &--high {
     color: #d1453b;
-    background-image: url("../assets/priority.svg");
-    background-position: 0.4em center;
   }
 
   &--medium {
     color: #eb8909;
   }
+}
 
-  &--low {
-    color: black;
+@keyframes horizontal-shaking {
+  0% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(5px);
+  }
+  50% {
+    transform: translateX(-5px);
+  }
+  75% {
+    transform: translateX(5px);
+  }
+  100% {
+    transform: translateX(0);
   }
 }
+
+// TODO Style the UI

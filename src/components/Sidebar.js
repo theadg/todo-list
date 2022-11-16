@@ -7,12 +7,13 @@ import deleteIcon from "../assets/delete.png";
 import ProjectSection, {
   ShowProjectContent,
   removeTasks,
+  createPageHeader,
 } from "./ProjectSection";
-import { addDays, format } from "date-fns";
+import { addDays, format, toDate, parseISO } from "date-fns";
 
 let projectList = [],
   id = 1;
-const projectGroup = document.querySelector("#projectGroup");
+export let currentTab = "Inbox";
 
 function sideBarItem(icon, name, id) {
   const sideBarItem = document.createElement("section");
@@ -60,29 +61,41 @@ function createSideBarItems() {
   return [taskGroup, projectGroup];
 }
 
-function addAllTasks() {
+export function addAllTasks() {
   clearSectionContainer();
   removeTasks();
+  setCurrentTab("Inbox");
+  createPageHeader("Inbox");
   projectList.forEach((project) => {
     ShowProjectContent(project);
   });
 }
 
-function addTodayTasks() {
+export function addTodayTasks() {
   clearSectionContainer();
   removeTasks();
+  setCurrentTab("Today");
+  createPageHeader("Today");
   projectList.forEach((project) => {
     ShowProjectContent(project, true, false);
   });
 }
 
-function addUpcomingTasks() {
+export function addUpcomingTasks() {
   clearSectionContainer();
   removeTasks();
+  setCurrentTab("Upcoming");
+  createPageHeader("Upcoming");
   projectList.forEach((project) => {
     ShowProjectContent(project, false, true);
   });
 }
+
+function setCurrentTab(tab) {
+  currentTab = tab;
+  console.log("CURRENT TAB", currentTab);
+}
+
 // Approve
 // Creates the Project Section of the Sidebar
 function createSideBarProject(projectGroup) {
@@ -247,38 +260,48 @@ function addProject(projName) {
         name: "TASK 1",
         desc: "DESC 1",
         prio: "High Priority",
+        // date: parseISO(format(new Date(), "yyyy-MM-dd")),
         date: format(new Date(), "yyyy-MM-dd"),
+        id: 1,
       },
-      {
-        name: "TASK 2",
-        desc: "DESC 2",
-        prio: "High Priority",
-        date: format(new Date(), "yyyy-MM-dd"),
-      },
-      {
-        name: "TASK 3",
-        desc: "DESC 3",
-        prio: "High Priority",
-        date: format(new Date(), "yyyy-MM-dd"),
-      },
-      {
-        name: "TASK 4",
-        desc: "DESC 4",
-        prio: "High Priority",
-        date: format(addDays(new Date(), 10), "yyyy-MM-dd"),
-      },
-      {
-        name: "TASK 5",
-        desc: "DESC 5",
-        prio: "High Priority",
-        date: format(addDays(new Date(), 10), "yyyy-MM-dd"),
-      },
-      {
-        name: "TASK 6",
-        desc: "DESC 6",
-        prio: "High Priority",
-        date: format(addDays(new Date(), 10), "yyyy-MM-dd"),
-      },
+      // {
+      //   name: "TASK 2",
+      //   desc: "DESC 2",
+      //   prio: "High Priority",
+      //   date: toDate(format(new Date(), "yyyy-MM-dd")),
+      //   id: 2,
+      // },
+      // {
+      //   name: "TASK 3",
+      //   desc: "DESC 3",
+      //   prio: "High Priority",
+      //   date: toDate(format(new Date(), "yyyy-MM-dd")),
+      //   id: 3,
+      // },
+      // {
+      //   name: "TASK 4",
+      //   desc: "DESC 4",
+      //   prio: "High Priority",
+      //   // date: parseISO(format(addDays(new Date(), 10), "yyyy-MM-dd")),
+      //   date: format(addDays(new Date(), 10), "yyyy-MM-dd"),
+      //   id: 4,
+      // },
+      // {
+      //   name: "TASK 5",
+      //   desc: "DESC 5",
+      //   prio: "High Priority",
+      //   // date: parseISO(format(addDays(new Date(), 5), "yyyy-MM-dd")),
+      //   date: format(addDays(new Date(), 5), "yyyy-MM-dd"),
+      //   id: 5,
+      // },
+      // {
+      //   name: "TASK 6",
+      //   desc: "DESC 6",
+      //   prio: "High Priority",
+      //   // date: parseISO(format(addDays(new Date(), 7), "yyyy-MM-dd")),
+      //   date: format(addDays(new Date(), 7), "yyyy-MM-dd"),
+      //   id: 6,
+      // },
     ],
     section: (project) => {
       ProjectSection(project);

@@ -662,7 +662,8 @@ function showCurrentTabContent() {
   }
 }
 
+// TODO: Have General Tasks which is yung uncategorized tasks
+// TODO: add number of tasks(?)
+
 // TODO: RESPONSIVENESS
 // TODO: INTERACTIONS
-
-// TODO: Have General Tasks which is yung uncategorized

@@ -663,6 +663,7 @@ function showCurrentTabContent() {
 }
 
 // TODO: Have General Tasks which is yung uncategorized tasks
+// TODO: Local Storage
 // TODO: add number of tasks(?)
 
 // TODO: RESPONSIVENESS

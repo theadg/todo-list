@@ -256,14 +256,14 @@ function addProject(projName) {
     Id: id,
     title: projName,
     tasks: [
-      {
-        name: "TASK 1",
-        desc: "DESC 1",
-        prio: "High Priority",
-        // date: parseISO(format(new Date(), "yyyy-MM-dd")),
-        date: format(new Date(), "yyyy-MM-dd"),
-        id: 1,
-      },
+      // {
+      //   name: "TASK 1",
+      //   desc: "DESC 1",
+      //   prio: "High Priority",
+      //   // date: parseISO(format(new Date(), "yyyy-MM-dd")),
+      //   date: format(new Date(), "yyyy-MM-dd"),
+      //   id: 1,
+      // },
       // {
       //   name: "TASK 2",
       //   desc: "DESC 2",
@@ -333,8 +333,6 @@ export default function Sidebar() {
 }
 
 // Refactored Code:
-
-function appendAddProjectBtn(addProjectBtn) {}
 
 function appendToProjectGroup(...item) {
   const projectGroup = document.querySelector("#projectGroup");
@@ -491,3 +489,9 @@ export function clearSectionContainer() {
     sectionContainer.firstChild.remove();
   }
 }
+
+window.onload = () => {
+  addProject("General Tasks");
+  addProjectsToDOM();
+  addAllTasks();
+};

@@ -4,12 +4,17 @@ import {
   addAllTasks,
   addTodayTasks,
   addUpcomingTasks,
+  updateProjectInput,
+  removeFromProjectList,
+  addProjectsToDOM,
+  addProject,
 } from "./Sidebar";
 import { format, startOfToday, parseISO } from "date-fns";
 import editIcon from "../assets/edit.png";
 import deleteIcon from "../assets/delete.png";
 
 let taskID = 1;
+
 export function createPageHeader(headerName) {
   const sectionContainer = document.querySelector("#sectionContainer");
   const pageHeaderTitle = document.createElement("h2");
@@ -22,6 +27,7 @@ export function createPageHeader(headerName) {
   sectionContainer.append(pageHeaderTitle);
   console.log(pageHeaderTitle);
 }
+
 export default function ProjectSection(project) {
   const sectionContainer = document.querySelector("#sectionContainer");
   clearSectionContainer();
@@ -31,18 +37,58 @@ export default function ProjectSection(project) {
   const projectContainer = document.createElement("div");
   projectContainer.classList.add("project__container");
 
+  // Project Header
+  const projectHeader = document.createElement("header");
+  projectHeader.classList.add("project__header");
   // Project Title
+
   const projectTitle = document.createElement("h2");
   projectTitle.classList.add("project__text--title");
   projectTitle.textContent = project.title;
 
+  const projectEdit = new Image();
+  projectEdit.src = editIcon;
+  projectEdit.classList.add("sidebar__icon", "sidebar__icon--small");
+
+  const projectDelete = new Image();
+  projectDelete.src = deleteIcon;
+  projectDelete.classList.add("sidebar__icon", "sidebar__icon--small");
+
+  const projectOptions = document.createElement("div");
+  // projectOptions.classList.add("sidebar__project--option", "hidden");
+  projectOptions.classList.add("sidebar__project--option", "border--bottom");
+
+  projectOptions.append(projectEdit, projectDelete);
+
   const projectSection = document.createElement("div");
   projectSection.classList.add("project");
-  projectSection.append(projectTitle);
+  projectSection.append(projectHeader);
+
+  projectHeader.append(projectTitle, projectOptions);
+  // console.log(projectHeader);
+  projectSection.append(projectHeader);
 
   projectContainer.append(projectSection);
-  // Project Tasks
-  //   Empty
+
+  projectEdit.onclick = () => {
+    // add edit fn here
+    projectHeader.after(
+      updateProjectInput(
+        project.title,
+        project.Id,
+        projectContainer,
+        projectHeader
+      )
+    );
+    projectHeader.remove();
+  };
+
+  projectDelete.onclick = () => {
+    // add delete fn here
+    projectContainer.remove();
+
+    removeFromProjectList(project.title);
+  };
 
   checkTaskList(project.tasks, project, projectSection, projectContainer);
 
@@ -78,20 +124,56 @@ export function clearProjectContainer() {
 }
 
 export function ShowProjectContent(project, today = false, incoming = false) {
+  if (project.tasks.length === 0) return;
+  // Project Header
+  const projectHeader = document.createElement("header");
+  projectHeader.classList.add("project__header");
+  // Project Title
+
   const projectTitle = document.createElement("h2");
   projectTitle.classList.add("project__text--title");
   projectTitle.textContent = project.title;
 
-  const projectSection = document.createElement("div");
-  projectSection.classList.add("project");
+  const projectEdit = new Image();
+  projectEdit.src = editIcon;
+  projectEdit.classList.add("sidebar__icon", "sidebar__icon--small");
+
+  const projectDelete = new Image();
+  projectDelete.src = deleteIcon;
+  projectDelete.classList.add("sidebar__icon", "sidebar__icon--small");
+
+  const projectOptions = document.createElement("div");
+  // projectOptions.classList.add("sidebar__project--option", "hidden");
+  projectOptions.classList.add("sidebar__project--option", "border--bottom");
+
+  project.title === "General Tasks"
+    ? projectOptions.append(projectEdit)
+    : projectOptions.append(projectEdit, projectDelete);
+  projectHeader.append(projectTitle, projectOptions);
 
   const projectContainer = document.createElement("div");
   projectContainer.classList.add("project__container");
 
-  projectSection.append(projectTitle);
+  const projectSection = document.createElement("div");
+  projectSection.classList.add("project");
+  projectSection.append(projectHeader);
   // just show the tasks here
   projectContainer.append(projectSection);
   createTaskUI(project.tasks, project, projectContainer, today, incoming);
+
+  projectEdit.onclick = () => {
+    // add edit fn here
+    projectHeader.after(updateProjectInput(project.title, project.Id));
+    projectHeader.remove();
+  };
+
+  projectDelete.onclick = () => {
+    // add delete fn here
+    // projectSection.remove();
+    projectContainer.remove();
+    removeFromProjectList(project.title);
+    addProjectsToDOM();
+  };
 
   sectionContainer.append(projectContainer);
 }
@@ -375,6 +457,10 @@ function createAddTask(project, projectContainer) {
 
     taskAddBtn.onclick = () => {
       // app logic
+      if (project.name === "General Tasks") {
+        addProject("General Tasks");
+        addProjectsToDOM();
+      }
       addToProjectTasks(
         project,
         taskName,
@@ -390,7 +476,7 @@ function createAddTask(project, projectContainer) {
       console.log("TASK ADD CURRENT TAB: ", currentTab);
       // DOM Logic here
       // createTaskUI(project.tasks, project, projectContainer, false, false);
-      showCurrentTabContent();
+      showCurrentTabContent(project);
     };
 
     const taskCancelBtn = document.createElement("button");
@@ -501,7 +587,7 @@ function updateTask(element, project, projectContainer) {
 
       removeTasks();
 
-      showCurrentTabContent();
+      showCurrentTabContent(project);
       // createTaskUI(project.tasks, project, projectContainer);
     };
 
@@ -636,8 +722,8 @@ function updateCurrentTask(element, name, desc, prio, date) {
 // TODO: create empty tabs for projects
 
 function sortTasksAscending(tasks) {
-  console.log("before");
-  console.table(tasks);
+  // console.log("before");
+  // console.table(tasks);
   // App
 
   const sortedTasks = tasks.sort((a, b) => parseISO(a.date) - parseISO(b.date));
@@ -645,13 +731,13 @@ function sortTasksAscending(tasks) {
   //   compareAsc(toDate(a.date), toDate(b.date))
   // );
 
-  console.log("after");
-  console.table(sortedTasks);
+  // console.log("after");
+  // console.table(sortedTasks);
 
   return sortedTasks;
 }
 
-function showCurrentTabContent() {
+export function showCurrentTabContent(project) {
   console.log("SHOWCURRENTTABCONTENT", currentTab);
   if (currentTab === "Inbox") {
     addAllTasks();
@@ -659,10 +745,12 @@ function showCurrentTabContent() {
     addTodayTasks();
   } else if (currentTab === "Upcoming") {
     addUpcomingTasks();
+  } else {
+    project.section(project);
   }
 }
 
-// TODO: Have General Tasks which is yung uncategorized tasks
+// TODO: Create Rename And Delete Versions of tasks
 // TODO: Local Storage
 // TODO: add number of tasks(?)
 

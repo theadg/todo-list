@@ -8,6 +8,7 @@ import ProjectSection, {
   ShowProjectContent,
   removeTasks,
   createPageHeader,
+  showCurrentTabContent,
 } from "./ProjectSection";
 import { addDays, format, toDate, parseISO } from "date-fns";
 
@@ -160,7 +161,12 @@ function addProjectInput() {
   return addProjectInputRow;
 }
 
-function updateProjectInput(userInput, taskID) {
+export function updateProjectInput(
+  userInput,
+  taskID,
+  projectContainer,
+  projectHeader
+) {
   const addProjectInputRow = document.createElement("div");
   const { addProjectInputContainer, addProjectInput } =
     createAddProjectInputContainer(userInput);
@@ -168,7 +174,13 @@ function updateProjectInput(userInput, taskID) {
   addProjectInputRow.classList.add("sidebar__input--row", "addProjectInput");
   addProjectInputRow.append(
     addProjectInputContainer,
-    addProjectButtons(addProjectInput, true, taskID)
+    addProjectButtons(
+      addProjectInput,
+      true,
+      taskID,
+      projectContainer,
+      projectHeader
+    )
   );
 
   return addProjectInputRow;
@@ -179,7 +191,14 @@ function updateProjectInput(userInput, taskID) {
 // Approve
 // Adds the project options button
 // TODO: Add Cancel button here
-function addProjectButtons(input, edit = false, taskID = 0) {
+function addProjectButtons(
+  input,
+  edit = false,
+  taskID = 0,
+  projectContainer = document.querySelector(".project__container"),
+  projectHeader = document.querySelector(".project__header")
+) {
+  console.log(projectContainer, projectHeader);
   const { addProjectInputButtons, addProjectCancelBtn, addProjectSaveBtn } =
     createAddProjectButtons();
 
@@ -194,6 +213,7 @@ function addProjectButtons(input, edit = false, taskID = 0) {
   addProjectSaveBtn.onclick = () => {
     if (edit) {
       findCurrentProject.edit(input.value);
+      showCurrentTabContent(findCurrentProject);
     } else {
       addProject(input.value);
     }
@@ -205,6 +225,8 @@ function addProjectButtons(input, edit = false, taskID = 0) {
     // remove the current addproject then add the existing
     removeItemfromDOM(".addProjectInput");
     appendToProjectGroup(addProjectBtn());
+    projectContainer.prepend(projectHeader);
+
     addProjectsToDOM();
   };
   return addProjectInputButtons;
@@ -212,7 +234,7 @@ function addProjectButtons(input, edit = false, taskID = 0) {
 
 // Approve
 // Adds the project to Project Group
-function addProjectsToDOM() {
+export function addProjectsToDOM() {
   clearDOM();
   appendToProjectGroup(createSideBarProjectHeader());
 
@@ -234,7 +256,7 @@ function clearDOM() {
   }
 }
 
-function removeFromProjectList(input) {
+export function removeFromProjectList(input) {
   const projectIndex = projectList.findIndex(
     (project) => project.title === input
   );
@@ -250,7 +272,7 @@ function addToProjectList(project) {
   return projectList;
 }
 
-function addProject(projName) {
+export function addProject(projName) {
   // create factory function
   let project = {
     Id: id,
@@ -467,7 +489,7 @@ function createProjectItems(project) {
 
   ProjectInputContainer.onclick = () => {
     // Clear Elements from Section container before adding new elements
-
+    setCurrentTab("Project");
     project.section(project);
   };
 

@@ -94,12 +94,14 @@ body {
   justify-content: center;
   flex-direction: column;
   width: 100%;
+
   &__text {
     &--title {
       height: fit-content;
       width: 100%;
       padding-bottom: 0.25em;
-      border-bottom: solid 1px #e4e4e4;
+      padding: 0;
+      margin-block-end: 0.25em;
     }
 
     &--prompt {
@@ -108,6 +110,7 @@ body {
 
     &--header {
       font-size: 1.5rem;
+      border-bottom: solid 1px #e4e4e4;
     }
   }
 
@@ -137,6 +140,13 @@ body {
 
   &__container {
     padding-left: 1.5em;
+  }
+
+  &__header {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    border-bottom: solid 1px #e4e4e4;
   }
 }
 
@@ -172,11 +182,11 @@ body {
   flex-direction: column;
   padding: 2rem 2rem 2rem 1rem;
   justify-content: flex-start;
-  // z-index: 1;
+  z-index: 2;
   // position: absolute;
-  // transition: ease-in-out left 0.35s;
+  transition: ease-in-out left 0.35s;
   transition: ease-in-out margin-left 0.35s;
-  margin-left: 0px;
+  margin-left: -320px;
   &__item {
     @include flexCenter();
     gap: 1rem;
@@ -263,6 +273,7 @@ body {
       display: flex;
       flex-direction: column;
       gap: 0.5em;
+      width: 100%;
     }
   }
 
@@ -285,7 +296,7 @@ body {
     border-radius: 10px;
     padding: 8px 16px;
     gap: 0.75em;
-
+    margin-top: 1em;
     &--select {
       display: flex;
       border: none;
@@ -483,4 +494,8 @@ select {
   }
 }
 
+.border--bottom {
+  // border-bottom: solid 1px #e4e4e4;
+  // padding: 2px;
+}
 // TODO Style the UI

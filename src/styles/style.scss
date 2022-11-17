@@ -5,6 +5,7 @@ body {
   font-family: Inter, sans-serif;
   position: relative;
   height: 100vh;
+  width: 100vw;
   overflow-x: hidden;
 }
 
@@ -61,30 +62,37 @@ body {
     opacity: 0.5;
   }
 }
+
 #container {
+  margin: 0;
+  padding: 0;
   height: 100vh;
-  width: 100%;
-  position: relative;
+  width: 100vw;
+  // position: relative;
 
   display: flex;
   flex-direction: column;
 }
 
 .section {
-  height: 100%;
-  width: 100%;
+  height: 100vh;
+  width: 100vw;
   display: flex;
+  // justify-content: center;
 
   &--main {
     height: 100%;
     display: flex;
     flex-direction: column;
-    width: 50%;
+    justify-self: center;
+    margin: auto;
+    // width: clamp(80%, 450px, 20vw);
+    width: max(60%, 500px);
     padding: 3em 0;
     // background-color: red;
     // align-items: center;
 
-    margin: 0 auto;
+    // margin: 0 auto;
   }
 }
 
@@ -111,6 +119,8 @@ body {
     &--header {
       font-size: 1.5rem;
       border-bottom: solid 1px #e4e4e4;
+      display: flex;
+      justify-content: space-between;
     }
   }
 
@@ -154,11 +164,12 @@ body {
 .navbar {
   @include flexCenter();
   padding: 0 2rem;
-  gap: 50%;
-  width: 100%;
+  // gap: 45vw;
+  width: 100vw;
   background-color: $color-primary;
   color: white;
   z-index: 2;
+  // justify-content: none;
   &__menu {
     @include flexCenter();
     justify-content: center;
@@ -172,21 +183,30 @@ body {
       cursor: pointer;
     }
   }
+
+  h2 {
+    // justify-self: center;
+    padding: 0.5em;
+    margin: auto;
+  }
 }
 
 .sidebar {
   width: 270px;
-  height: 100%;
+  height: 100vh;
   background-color: #fafafa;
-  justify-content: flex-start;
   flex-direction: column;
+  // padding: 8rem 2rem 2rem 1rem;
   padding: 2rem 2rem 2rem 1rem;
   justify-content: flex-start;
-  z-index: 2;
+  // z-index: 1;
   // position: absolute;
+  // top: 0;
+  // left: -270px;
   transition: ease-in-out left 0.35s;
-  transition: ease-in-out margin-left 0.35s;
+  transition: ease-in-out all 0.35s;
   margin-left: -320px;
+  // justify-self: flex-start;
   &__item {
     @include flexCenter();
     gap: 1rem;
@@ -241,6 +261,7 @@ body {
   }
 
   &--open {
+    // left: 0;
     margin-left: 0;
   }
 
@@ -295,7 +316,7 @@ body {
     border: 2px solid #d7d5d5;
     border-radius: 10px;
     padding: 8px 16px;
-    gap: 0.75em;
+    // gap: 0.75em;
     margin-top: 1em;
     &--select {
       display: flex;
@@ -384,7 +405,7 @@ body {
       border-radius: 20px;
       background: #faeceb;
       border: 2px solid #d1453b;
-
+      flex-shrink: 0;
       &:checked,
       &:hover {
         cursor: pointer;
@@ -494,8 +515,37 @@ select {
   }
 }
 
-.border--bottom {
-  // border-bottom: solid 1px #e4e4e4;
-  // padding: 2px;
-}
 // TODO Style the UI
+
+@media screen and (max-width: 450px) {
+  .section {
+    &--main {
+      // background-color: red;
+      width: 80%;
+    }
+  }
+
+  .task {
+    &__container {
+      &--text {
+        width: 70%;
+      }
+
+      &--select {
+        margin-top: 1em;
+        flex-wrap: wrap;
+        gap: 0.5em;
+      }
+    }
+
+    &__button {
+      width: auto;
+    }
+  }
+
+  .sidebar--open {
+    margin-right: 2rem;
+  }
+}
+
+// TODO: CENTER THE TEXT

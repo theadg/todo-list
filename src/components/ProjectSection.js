@@ -8,6 +8,9 @@ import {
   removeFromProjectList,
   addProjectsToDOM,
   addProject,
+  // populateStorage,
+  projectList,
+  getTab,
 } from "./Sidebar";
 import { format, startOfToday, parseISO } from "date-fns";
 import editIcon from "../assets/edit.png";
@@ -81,6 +84,7 @@ export default function ProjectSection(project) {
       )
     );
     projectHeader.remove();
+    populateStorage();
   };
 
   projectDelete.onclick = () => {
@@ -88,6 +92,7 @@ export default function ProjectSection(project) {
     projectContainer.remove();
 
     removeFromProjectList(project.title);
+    populateStorage();
   };
 
   checkTaskList(project.tasks, project, projectSection, projectContainer);
@@ -98,10 +103,6 @@ export default function ProjectSection(project) {
 
 function checkTaskList(tasks, project, projectSection, projectContainer) {
   if (tasks.length === 0) {
-    // projectSection.append(
-    //   emptyText("You have no current tasks for this project")
-    // );
-    // projectSection.append(createAddTaskBtn(project, projectContainer));
     showEmptyInbox(project, projectContainer);
   } else {
     removeTasks();
@@ -294,6 +295,9 @@ function createTaskBlock(
 
     taskContainer.after(updateTask(element, project, projectContainer));
     taskContainer.remove();
+
+    console.log(projectList);
+    // populateStorage();
   };
 
   const taskDelete = new Image();
@@ -309,7 +313,21 @@ function createTaskBlock(
 
     // App Logic
     element.completed = true;
-    // console.log(element);
+
+    const currentTask = project.tasks.findIndex(
+      (task) => task.name === element.name
+    );
+    project.tasks[currentTask] = element;
+    console.log(element);
+
+    console.log(project.tasks);
+    // const currentProject = projectList.findIndex(
+    //   (proj) => proj.Id === project.Id
+    // );
+
+    projectList[getCurrentProjectIndex(project)] = project;
+
+    populateStorage();
   };
 
   taskDelete.onclick = () => {
@@ -319,14 +337,10 @@ function createTaskBlock(
 
     // App Logic
     const currentTask = (task) => task.id === element.id;
-
     const currentIndex = project.tasks.findIndex(currentTask);
-    // console.log(project.tasks, "CURRENT INDEX", currentIndex);
-    // console.log("ELEMENT ID:", element.id);
-    // console.log("CURRENT TASK:", currentTask);
-
     // remove from app
     project.tasks.splice(currentIndex, 1);
+    projectList[getCurrentProjectIndex(project)] = project;
 
     if (project.tasks.length === 0) {
       // show here
@@ -334,6 +348,8 @@ function createTaskBlock(
       // showEmptyInbox(projectSection);
       showEmptyInbox(project, projectSection, projectContainer);
     }
+
+    populateStorage();
   };
 
   // console.log(projectContainer);
@@ -473,9 +489,8 @@ function createAddTask(project, projectContainer) {
       removeElement("#addProjTask");
       removeTasks();
 
-      console.log("TASK ADD CURRENT TAB: ", currentTab);
+      // console.log("TASK ADD CURRENT TAB: ", currentTab);
       // DOM Logic here
-      // createTaskUI(project.tasks, project, projectContainer, false, false);
       showCurrentTabContent(project);
     };
 
@@ -517,6 +532,7 @@ function updateTask(element, project, projectContainer) {
     "task__input--select",
     "task__input--prio"
   );
+
   taskPriority.id = "taskPriority";
   // add priority
   taskPriority.add(
@@ -585,10 +601,18 @@ function updateTask(element, project, projectContainer) {
         taskDate.value
       );
 
-      removeTasks();
+      console.log(element);
 
+      const currentTask = project.tasks.findIndex(
+        (task) => task.name === element.name
+      );
+      project.tasks[currentTask] = element;
+      projectList[getCurrentProjectIndex(project)] = project;
+
+      // THIS IS WHERE MAGLAGAY TAYO NG FUCKING LOGIC FOR THE CURRE
+      removeTasks();
+      populateStorage();
       showCurrentTabContent(project);
-      // createTaskUI(project.tasks, project, projectContainer);
     };
 
     const taskCancelBtn = document.createElement("button");
@@ -598,6 +622,8 @@ function updateTask(element, project, projectContainer) {
     taskCancelBtn.onclick = () => {
       createTaskUI(project.tasks, project, projectContainer);
       taskContainer.remove();
+      removeTasks();
+      getTab();
     };
 
     taskContainer.append(taskCancelBtn, taskSaveBtn);
@@ -675,14 +701,15 @@ function addToProjectTasks(
       completed: false,
     });
 
+    projectList[getCurrentProjectIndex(project)] = project;
     taskID++;
 
     // DOM
     // console.log(valid, validation);
-    console.log(project.tasks);
 
     input.remove();
     createTaskUI(project.tasks, project, projectContainer, false, false);
+    populateStorage();
   }
 }
 
@@ -738,7 +765,6 @@ function sortTasksAscending(tasks) {
 }
 
 export function showCurrentTabContent(project) {
-  console.log("SHOWCURRENTTABCONTENT", currentTab);
   if (currentTab === "Inbox") {
     addAllTasks();
   } else if (currentTab === "Today") {
@@ -746,13 +772,23 @@ export function showCurrentTabContent(project) {
   } else if (currentTab === "Upcoming") {
     addUpcomingTasks();
   } else {
-    project.section(project);
+    // project.section(project);
+    ProjectSection(project);
   }
 }
 
-// TODO: Create Rename And Delete Versions of tasks
 // TODO: Local Storage
 // TODO: add number of tasks(?)
 
-// TODO: RESPONSIVENESS
-// TODO: INTERACTIONS
+function populateStorage() {
+  // localStorage.setItem("projectListStorage", projectList)
+
+  localStorage.setItem("projectListStorage", JSON.stringify(projectList));
+  console.log(JSON.parse(localStorage.getItem("projectListStorage")));
+}
+
+export function getCurrentProjectIndex(project) {
+  return projectList.findIndex((proj) => proj.Id === project.Id);
+}
+
+// TODO: LOCAL STORAGE ON ADDING PROJECTS

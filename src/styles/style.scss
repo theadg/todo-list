@@ -205,7 +205,8 @@ body {
   // left: -270px;
   transition: ease-in-out left 0.35s;
   transition: ease-in-out all 0.35s;
-  margin-left: -320px;
+  // margin-left: -320px;
+  margin-left: 0;
   // justify-self: flex-start;
   &__item {
     @include flexCenter();
@@ -262,7 +263,7 @@ body {
 
   &--open {
     // left: 0;
-    margin-left: 0;
+    margin-left: -320px;
   }
 
   &__input {

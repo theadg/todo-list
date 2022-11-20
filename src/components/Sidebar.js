@@ -297,51 +297,20 @@ export function addProject(projName) {
     title: projName,
     tasks: [
       {
-        name: "TASK 1",
-        desc: "DESC 1",
+        name: "Smile More",
+        desc: "",
         prio: "High Priority",
         // date: parseISO(format(new Date(), "yyyy-MM-dd")),
         date: format(new Date(), "yyyy-MM-dd"),
         id: 1,
       },
       {
-        name: "TASK 2",
-        desc: "DESC 2",
+        name: "Worry Less",
+        desc: "",
         prio: "High Priority",
         date: format(new Date(), "yyyy-MM-dd"),
         id: 2,
       },
-      // {
-      //   name: "TASK 3",
-      //   desc: "DESC 3",
-      //   prio: "High Priority",
-      //   date: toDate(format(new Date(), "yyyy-MM-dd")),
-      //   id: 3,
-      // },
-      // {
-      //   name: "TASK 4",
-      //   desc: "DESC 4",
-      //   prio: "High Priority",
-      //   // date: parseISO(format(addDays(new Date(), 10), "yyyy-MM-dd")),
-      //   date: format(addDays(new Date(), 10), "yyyy-MM-dd"),
-      //   id: 4,
-      // },
-      // {
-      //   name: "TASK 5",
-      //   desc: "DESC 5",
-      //   prio: "High Priority",
-      //   // date: parseISO(format(addDays(new Date(), 5), "yyyy-MM-dd")),
-      //   date: format(addDays(new Date(), 5), "yyyy-MM-dd"),
-      //   id: 5,
-      // },
-      // {
-      //   name: "TASK 6",
-      //   desc: "DESC 6",
-      //   prio: "High Priority",
-      //   // date: parseISO(format(addDays(new Date(), 7), "yyyy-MM-dd")),
-      //   date: format(addDays(new Date(), 7), "yyyy-MM-dd"),
-      //   id: 6,
-      // },
     ],
     section: (project) => {
       // reference the project from the local storage
@@ -604,5 +573,3 @@ function updateProjectTitle(project, projTitle) {
   projectList[getCurrentProjectIndex(project)] = project;
   populateStorage();
 }
-
-// TODO fix bugs

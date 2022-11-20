@@ -9,10 +9,11 @@ import ProjectSection, {
   removeTasks,
   createPageHeader,
   showCurrentTabContent,
+  getCurrentProjectIndex,
 } from "./ProjectSection";
-import { addDays, format, toDate, parseISO } from "date-fns";
+import { format } from "date-fns";
 
-let projectList = [],
+export let projectList = [],
   id = 1;
 export let currentTab = "Inbox";
 
@@ -67,7 +68,12 @@ export function addAllTasks() {
   removeTasks();
   setCurrentTab("Inbox");
   createPageHeader("Inbox");
-  projectList.forEach((project) => {
+
+  const currentProjectList = JSON.parse(
+    localStorage.getItem("projectListStorage")
+  );
+
+  currentProjectList.forEach((project) => {
     ShowProjectContent(project);
   });
 }
@@ -94,7 +100,7 @@ export function addUpcomingTasks() {
 
 function setCurrentTab(tab) {
   currentTab = tab;
-  console.log("CURRENT TAB", currentTab);
+  setTab();
 }
 
 // Approve
@@ -206,13 +212,19 @@ function addProjectButtons(
     setSaveButtonState(addProjectSaveBtn, input);
   };
 
-  const findCurrentProject = projectList.find(
+  const currentProjectList = JSON.parse(
+    localStorage.getItem("projectListStorage")
+  );
+
+  const findCurrentProject = currentProjectList.find(
     (project) => project.Id === taskID
   );
 
   addProjectSaveBtn.onclick = () => {
     if (edit) {
-      findCurrentProject.edit(input.value);
+      // findCurrentProject.edit(input.value);
+      updateProjectTitle(findCurrentProject, input.value);
+      console.log(findCurrentProject);
       showCurrentTabContent(findCurrentProject);
     } else {
       addProject(input.value);
@@ -238,7 +250,13 @@ export function addProjectsToDOM() {
   clearDOM();
   appendToProjectGroup(createSideBarProjectHeader());
 
-  projectList.forEach((project) => {
+  const currentProjectList = JSON.parse(
+    localStorage.getItem("projectListStorage")
+  );
+
+  console.log(currentProjectList); //working
+
+  currentProjectList.forEach((project) => {
     const { ProjectInputContainer } = createProjectItems(project);
     createProjectItems(project);
     appendToProjectGroup(ProjectInputContainer);
@@ -267,7 +285,7 @@ export function removeFromProjectList(input) {
 
 function addToProjectList(project) {
   projectList.push(project);
-
+  populateStorage();
   // console.log(projectList);
   return projectList;
 }
@@ -290,7 +308,7 @@ export function addProject(projName) {
         name: "TASK 2",
         desc: "DESC 2",
         prio: "High Priority",
-        date: toDate(format(new Date(), "yyyy-MM-dd")),
+        date: format(new Date(), "yyyy-MM-dd"),
         id: 2,
       },
       // {
@@ -326,7 +344,9 @@ export function addProject(projName) {
       // },
     ],
     section: (project) => {
+      // reference the project from the local storage
       ProjectSection(project);
+      // ProjectSection(projectList[getCurrentProjectIndex(project)]);
     },
     edit: (inputField) => {
       project.title = inputField;
@@ -473,8 +493,8 @@ function createProjectItems(project) {
     );
 
     currentItem.remove();
-
     e.stopPropagation();
+    populateStorage();
   };
 
   // TODO: Add remove from project list as well
@@ -484,13 +504,17 @@ function createProjectItems(project) {
 
     // remove from arrays
     removeFromProjectList(project.title);
+    populateStorage();
     e.stopPropagation();
   };
 
   ProjectInputContainer.onclick = () => {
     // Clear Elements from Section container before adding new elements
     setCurrentTab("Project");
-    project.section(project);
+    console.log(project);
+    // project.section(project);
+    ProjectSection(project);
+    setTab(project);
   };
 
   return { ProjectInputContainer };
@@ -513,7 +537,72 @@ export function clearSectionContainer() {
 }
 
 window.onload = () => {
-  addProject("General Tasks");
-  addProjectsToDOM();
-  addAllTasks();
+  // the problem may be here
+  if (localStorage.getItem("hasCodeRunBefore") === null) {
+    addProject("General Tasks");
+    addProjectsToDOM();
+    addAllTasks();
+    populateStorage();
+    localStorage.setItem("hasCodeRunBefore", true);
+  } else {
+    projectList = JSON.parse(localStorage.getItem("projectListStorage"));
+    setProjects();
+    getTab();
+  }
 };
+
+// use this FN to put the project list on local storage
+
+function populateStorage() {
+  // localStorage.setItem("projectListStorage", projectList
+  // projectList = JSON.parse(localStorage.getItem("projectListStorage"))
+  console.log(projectList);
+  localStorage.setItem("projectListStorage", JSON.stringify(projectList));
+  // localStorage.setItem("projectListStorage", projectList);
+}
+
+function setTab(project = null) {
+  console.log("CURRENT TAB:", currentTab);
+  localStorage.setItem("currentTab", currentTab);
+  localStorage.setItem("currentProject", JSON.stringify(project));
+}
+
+export function getTab() {
+  const currentTab = localStorage.getItem("currentTab");
+  const currentProject = JSON.parse(localStorage.getItem("currentProject"));
+
+  console.log(currentTab, "DEPOTA");
+  switch (currentTab) {
+    case "Inbox":
+      console.log("bobo inbox");
+      addAllTasks();
+      break;
+    case "Today":
+      addTodayTasks();
+      break;
+    case "Upcoming":
+      addUpcomingTasks();
+      break;
+    case "Project":
+      ProjectSection(currentProject);
+  }
+}
+// use this fn to get projects from the local storage
+// and put render it to the dom
+export function setProjects() {
+  // const projectList2 = localStorage.getItem("projectListStorage");
+  // console.log(JSON.parse(localStorage.getItem("projectListStorage")));
+  addProjectsToDOM();
+}
+
+// localStorage.clear();
+
+function updateProjectTitle(project, projTitle) {
+  project.title = projTitle;
+  ProjectSection(project).textContent = projTitle;
+
+  projectList[getCurrentProjectIndex(project)] = project;
+  populateStorage();
+}
+
+// TODO fix bugs

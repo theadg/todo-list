@@ -1,4 +1,4 @@
-# Tic Tac Toe
+# TheDoList
 
 This is a solution to the [Project: Todo List](https://www.theodinproject.com/lessons/node-path-javascript-todo-list). The [Odin Project](https://www.theodinproject.com/about) provides a free open source coding curriculum that can be taken entirely online. Since its inception, it has helped many students get hired as developers and has assisted countless others in learning enough programming to work on their own personal projects.
 

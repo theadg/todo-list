@@ -410,6 +410,7 @@ body {
       &:checked,
       &:hover {
         cursor: pointer;
+
         &::before {
           content: "✔";
           color: #d1453b;
@@ -420,6 +421,21 @@ body {
           justify-content: center;
           transform: all ease-in;
         }
+      }
+    }
+
+    &--medium {
+      border-color: #eb8909;
+
+      &::before {
+        color: #eb8909;
+      }
+    }
+
+    &--low {
+      border-color: #837d7d;
+      &::before {
+        color: #837d7d;
       }
     }
   }
@@ -438,6 +454,7 @@ body {
     }
   }
 }
+
 input[type="checkbox"] {
   appearance: none;
   margin-top: 2px;

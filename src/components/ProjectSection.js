@@ -251,6 +251,12 @@ function createTaskBlock(
   taskCheckbox.classList.add("task__input--checkbox");
   taskCheckbox.type = "checkbox";
 
+  if (element.prio === "Medium Priority") {
+    taskCheckbox.classList.add("task__input--medium");
+  } else if (element.prio === "Low Priority") {
+    taskCheckbox.classList.add("task__input--low");
+  }
+
   const taskTitle = document.createElement("h3");
   taskTitle.classList.add("task__input", "task__input--name");
   taskTitle.textContent = element.name;

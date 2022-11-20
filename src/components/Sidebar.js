@@ -466,7 +466,6 @@ function createProjectItems(project) {
     populateStorage();
   };
 
-  // TODO: Add remove from project list as well
   ProjectDelete.onclick = (e) => {
     // remove from dom
     ProjectInputContainer.remove();

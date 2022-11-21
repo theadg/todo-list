@@ -15,7 +15,7 @@ import { format } from "date-fns";
 import { nanoid } from "nanoid";
 
 export let projectList = [];
-// id = 1;
+
 export let currentTab = "Inbox";
 
 function sideBarItem(icon, name, id) {
@@ -34,13 +34,9 @@ function sideBarItem(icon, name, id) {
   return sideBarItem;
 }
 
-// Approve
-// Creates the sidebar items
 function createSideBarItems() {
   const inbox = sideBarItem(inboxIcon, "Inbox", "inbox");
-  // TODO Create Today Section
   const today = sideBarItem(todayIcon, "Today", "upcoming");
-  // TODO Create Upcoming Section
   const upcoming = sideBarItem(upcomingIcon, "Upcoming", "upcoming");
 
   const taskGroup = document.createElement("div");
@@ -104,16 +100,12 @@ function setCurrentTab(tab) {
   setTab();
 }
 
-// Approve
-// Creates the Project Section of the Sidebar
 function createSideBarProject(projectGroup) {
   projectGroup.append(createSideBarProjectHeader(), addProjectBtn());
 
   return projectGroup;
 }
 
-// Approve
-// Creates the Header of the Project Section of the Sidebar
 function createSideBarProjectHeader() {
   const projectMainTitle = document.createElement("p");
   projectMainTitle.textContent = "Projects";
@@ -122,8 +114,6 @@ function createSideBarProjectHeader() {
   return projectMainTitle;
 }
 
-// Approve
-// Adds the Add Project Btn to the Sidebar
 function addProjectBtn() {
   const addProjectBtn = document.createElement("button");
   addProjectBtn.classList.add("sidebar__button--add");
@@ -141,8 +131,6 @@ function addProjectBtn() {
   return addProjectBtn;
 }
 
-// Approve
-// Adds the Project Title Input to the Sidebar
 function addProjectInput() {
   const addProjectInputContainer = document.createElement("div");
   addProjectInputContainer.classList.add("sidebar__input--container");
@@ -193,11 +181,6 @@ export function updateProjectInput(
   return addProjectInputRow;
 }
 
-// Create a creator function for addProjectButtons
-
-// Approve
-// Adds the project options button
-// TODO: Add Cancel button here
 function addProjectButtons(
   input,
   edit = false,
@@ -235,7 +218,6 @@ function addProjectButtons(
   };
 
   addProjectCancelBtn.onclick = () => {
-    // remove the current addproject then add the existing
     removeItemfromDOM(".addProjectInput");
     appendToProjectGroup(addProjectBtn());
     projectContainer.prepend(projectHeader);
@@ -245,8 +227,6 @@ function addProjectButtons(
   return addProjectInputButtons;
 }
 
-// Approve
-// Adds the project to Project Group
 export function addProjectsToDOM() {
   clearDOM();
   appendToProjectGroup(createSideBarProjectHeader());
@@ -266,8 +246,6 @@ export function addProjectsToDOM() {
   appendToProjectGroup(addProjectBtn());
 }
 
-// Approve
-// Clears the Project Group Node
 function clearDOM() {
   const projectGroup = document.querySelector("#projectGroup");
   while (projectGroup.firstChild) {
@@ -287,12 +265,10 @@ export function removeFromProjectList(input) {
 function addToProjectList(project) {
   projectList.push(project);
   populateStorage();
-  // console.log(projectList);
   return projectList;
 }
 
 export function addProject(projName) {
-  // create factory function
   let project = {
     Id: nanoid(),
     title: projName,
@@ -342,8 +318,6 @@ export default function Sidebar() {
 
   return sidebar;
 }
-
-// Refactored Code:
 
 function appendToProjectGroup(...item) {
   const projectGroup = document.querySelector("#projectGroup");
@@ -444,12 +418,7 @@ function createProjectItems(project) {
     ProjectOptions.classList.add("hidden");
   };
 
-  // TODO: Add Edit functionality
   ProjectEdit.onclick = (e) => {
-    // removing dom elements
-
-    // removeItemfromDOM(".sidebar__button--add");
-
     const sideBarItems = Array.from(
       document.querySelectorAll(".sidebar__input--container")
     );
@@ -499,10 +468,6 @@ function createProjectItems(project) {
   return { ProjectInputContainer };
 }
 
-// function updateId() {
-//   id++;
-// }
-
 function removeItemfromDOM(item) {
   document.querySelector(item).remove();
 }
@@ -532,8 +497,6 @@ window.onload = () => {
     getTab();
   }
 };
-
-// use this FN to put the project list on local storage
 
 function populateStorage() {
   localStorage.setItem("projectListStorage", JSON.stringify(projectList));
@@ -572,8 +535,6 @@ export function setProjects() {
   addProjectsToDOM();
 }
 
-// localStorage.clear();
-
 function updateProjectTitle(project, projTitle) {
   project.title = projTitle;
   ProjectSection(project).textContent = projTitle;
@@ -581,8 +542,6 @@ function updateProjectTitle(project, projTitle) {
   projectList[getCurrentProjectIndex(project)] = project;
   populateStorage();
 }
-
-// TODO: fix add task bug
 
 function addInitialTasks() {
   const currentProjectList = JSON.parse(
@@ -598,7 +557,6 @@ function addInitialTasks() {
       name: "Smile More",
       desc: "",
       prio: "High Priority",
-      // date: parseISO(format(new Date(), "yyyy-MM-dd")),
       date: format(new Date(), "yyyy-MM-dd"),
       id: 1,
     },

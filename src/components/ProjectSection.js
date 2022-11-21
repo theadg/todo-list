@@ -8,7 +8,6 @@ import {
   removeFromProjectList,
   addProjectsToDOM,
   addProject,
-  // populateStorage,
   projectList,
   getTab,
   setTab,
@@ -17,8 +16,6 @@ import { format, startOfToday, parseISO } from "date-fns";
 import editIcon from "../assets/edit.png";
 import deleteIcon from "../assets/delete.png";
 import { nanoid } from "nanoid";
-
-// let taskID = 1;
 
 export function createPageHeader(headerName) {
   const sectionContainer = document.querySelector("#sectionContainer");
@@ -36,7 +33,6 @@ export function createPageHeader(headerName) {
 export default function ProjectSection(project) {
   const sectionContainer = document.querySelector("#sectionContainer");
   clearSectionContainer();
-  // removeTasks();
 
   // Project Container
   const projectContainer = document.createElement("div");
@@ -60,7 +56,6 @@ export default function ProjectSection(project) {
   projectDelete.classList.add("sidebar__icon", "sidebar__icon--small");
 
   const projectOptions = document.createElement("div");
-  // projectOptions.classList.add("sidebar__project--option", "hidden");
   projectOptions.classList.add("sidebar__project--option", "border--bottom");
 
   projectOptions.append(projectEdit, projectDelete);
@@ -70,13 +65,11 @@ export default function ProjectSection(project) {
   projectSection.append(projectHeader);
 
   projectHeader.append(projectTitle, projectOptions);
-  // console.log(projectHeader);
   projectSection.append(projectHeader);
 
   projectContainer.append(projectSection);
 
   projectEdit.onclick = () => {
-    // add edit fn here
     projectHeader.after(
       updateProjectInput(
         project.title,
@@ -148,7 +141,6 @@ export function ShowProjectContent(project, today = false, incoming = false) {
   projectDelete.classList.add("sidebar__icon", "sidebar__icon--small");
 
   const projectOptions = document.createElement("div");
-  // projectOptions.classList.add("sidebar__project--option", "hidden");
   projectOptions.classList.add("sidebar__project--option", "border--bottom");
 
   project.title === "General Tasks"
@@ -162,19 +154,15 @@ export function ShowProjectContent(project, today = false, incoming = false) {
   const projectSection = document.createElement("div");
   projectSection.classList.add("project");
   projectSection.append(projectHeader);
-  // just show the tasks here
   projectContainer.append(projectSection);
   createTaskUI(project.tasks, project, projectContainer, today, incoming);
 
   projectEdit.onclick = () => {
-    // add edit fn here
     projectHeader.after(updateProjectInput(project.title, project.Id));
     projectHeader.remove();
   };
 
   projectDelete.onclick = () => {
-    // add delete fn here
-    // projectSection.remove();
     projectContainer.remove();
     removeFromProjectList(project.title);
     populateStorage();
@@ -193,20 +181,12 @@ export function removeTasks() {
   const projectTasks = Array.from(
     document.querySelectorAll(".task__container")
   );
-
-  // while (projectContainer.firstChild) {
-  //   projectContainer.removeChild(projectContainer.firstChild);
-  // }
   projectTasks.forEach((task) => task.remove());
 }
-
-// const projectContainer = document.createElement("div");
-// projectContainer.id = "projectContainer";
 
 function createTaskUI(
   tasks,
   project,
-  // projectContainer = document.querySelector("project__container"),
   projectContainer,
   today = false,
   incoming = false
@@ -229,7 +209,6 @@ function createTaskContainer(
   today,
   incoming
 ) {
-  // Decides here kung anong
   tasks.map((element) => {
     if (element.completed) return;
     if (!today && !incoming) {
@@ -297,7 +276,6 @@ function createTaskBlock(
   textInput.append(taskTitle, taskDesc, selectContainer);
 
   const taskOptions = document.createElement("div");
-  // taskOptions.classList.add("sidebar__project--option", "hidden");
   taskOptions.classList.add("sidebar__project--option");
 
   const taskEdit = new Image();
@@ -308,9 +286,6 @@ function createTaskBlock(
 
     taskContainer.after(updateTask(element, project, projectContainer));
     taskContainer.remove();
-
-    console.log(projectList);
-    // populateStorage();
   };
 
   const taskDelete = new Image();
@@ -354,14 +329,11 @@ function createTaskBlock(
     getTab();
 
     if (project.tasks.length === 0) {
-      // show here
       removeElement("#addProjTask");
-      // showEmptyInbox(projectSection);
       showEmptyInbox(project, projectSection, projectContainer);
     }
   };
 
-  // console.log(projectContainer);
   projectContainer.append(taskContainer);
 }
 
@@ -392,14 +364,10 @@ function createAddTaskBtn(project, projectContainer) {
   projectAddTaskBtn.textContent = "Add Task";
   projectAddTaskBtn.append(addProjectIcon);
 
-  // add on click here
   projectAddTaskBtn.onclick = () => {
-    // remove empty text and btn
     removeElement(".project__text--prompt");
     removeElement(".project__button--add");
-    // show add task ui
 
-    // projectContainer.append(createAddTask(project, projectContainer));
     createAddTask(project, projectContainer);
   };
 
@@ -472,7 +440,6 @@ function createAddTask(project, projectContainer) {
   return mainTaskContainer;
 
   function createAddTaskOptions(project, projectContainer) {
-    console.log("PROJECT CONTAINER HERE:", projectContainer);
     const taskContainer = document.createElement("div");
     taskContainer.classList.add("task__container", "task__container--options");
 
@@ -500,9 +467,6 @@ function createAddTask(project, projectContainer) {
       removeElement("#addProjTask");
       removeTasks();
 
-      // console.log("TASK ADD CURRENT TAB: ", currentTab);
-      // DOM Logic here
-      // showCurrentTabContent(project);
       getTab();
     };
 
@@ -587,7 +551,6 @@ function updateTask(element, project, projectContainer) {
 
   const mainTaskContainer = document.createElement("div");
   mainTaskContainer.id = "inputContainer";
-  // mainTaskContainer.append(taskContainer, createAddTaskOptions(project));
   mainTaskContainer.append(
     taskContainer,
     createUpdateTaskOptions(element, project, projectContainer)
@@ -613,15 +576,12 @@ function updateTask(element, project, projectContainer) {
         taskDate.value
       );
 
-      console.log(element);
-
       const currentTask = project.tasks.findIndex(
         (task) => task.name === element.name
       );
       project.tasks[currentTask] = element;
       projectList[getCurrentProjectIndex(project)] = project;
 
-      // THIS IS WHERE MAGLAGAY TAYO NG FUCKING LOGIC FOR THE CURRE
       removeTasks();
       populateStorage();
       showCurrentTabContent(project);
@@ -659,7 +619,6 @@ function addTaskPriority(
 }
 
 function setTaskPriorityColor(element) {
-  console.log(element.value);
   switch (element.value) {
     case "High Priority":
       element.style.color = "#d1453b";
@@ -672,7 +631,6 @@ function setTaskPriorityColor(element) {
   }
 }
 
-// App Logic for Adding to Project Task
 function addToProjectTasks(
   project,
   name,
@@ -713,10 +671,6 @@ function addToProjectTasks(
       completed: false,
     });
 
-    // taskID++;
-    // DOM
-    // console.log(valid, validation);
-
     input.remove();
     createTaskUI(project.tasks, project, projectContainer, false, false);
 
@@ -740,8 +694,6 @@ function createAddTaskBtnRow(
   addTaskBtnRow.id = "addProjTask";
   addTaskBtnRow.append(addProjectIcon);
 
-  // console.log(projectContainer);
-  // Add functionality
   addTaskBtnRow.onclick = () => {
     addTaskBtnRow.remove();
     createAddTask(project, projectContainer);
@@ -750,7 +702,6 @@ function createAddTaskBtnRow(
   return addTaskBtnRow;
 }
 
-// App Logic => Updating Task
 function updateCurrentTask(element, name, desc, prio, date) {
   element.name = name;
   element.desc = desc;
@@ -760,21 +711,8 @@ function updateCurrentTask(element, name, desc, prio, date) {
   return element;
 }
 
-// TODO: create empty tabs for projects
-
 function sortTasksAscending(tasks) {
-  // console.log("before");
-  // console.table(tasks);
-  // App
-
   const sortedTasks = tasks.sort((a, b) => parseISO(a.date) - parseISO(b.date));
-  // const sortedTasks = tasks.sort((a, b) =>
-  //   compareAsc(toDate(a.date), toDate(b.date))
-  // );
-
-  // console.log("after");
-  // console.table(sortedTasks);
-
   return sortedTasks;
 }
 
@@ -786,17 +724,11 @@ export function showCurrentTabContent(project) {
   } else if (currentTab === "Upcoming") {
     addUpcomingTasks();
   } else {
-    // project.section(project);
     ProjectSection(project);
   }
 }
 
-// TODO: Local Storage
-// TODO: add number of tasks(?)
-
 function populateStorage() {
-  // localStorage.setItem("projectListStorage", projectList)
-
   localStorage.setItem("projectListStorage", JSON.stringify(projectList));
   console.log(JSON.parse(localStorage.getItem("projectListStorage")));
 }
@@ -804,5 +736,3 @@ function populateStorage() {
 export function getCurrentProjectIndex(project) {
   return projectList.findIndex((proj) => proj.Id === project.Id);
 }
-
-// TODO: LOCAL STORAGE ON ADDING PROJECTS

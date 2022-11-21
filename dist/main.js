@@ -60,14 +60,18 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Sidebar__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Sidebar */ "./src/components/Sidebar.js");
 /* harmony import */ var date_fns__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! date-fns */ "./node_modules/date-fns/esm/format/index.js");
 /* harmony import */ var date_fns__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! date-fns */ "./node_modules/date-fns/esm/startOfToday/index.js");
-/* harmony import */ var date_fns__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! date-fns */ "./node_modules/date-fns/esm/parseISO/index.js");
+/* harmony import */ var date_fns__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! date-fns */ "./node_modules/date-fns/esm/parseISO/index.js");
 /* harmony import */ var _assets_edit_png__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../assets/edit.png */ "./src/assets/edit.png");
 /* harmony import */ var _assets_delete_png__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../assets/delete.png */ "./src/assets/delete.png");
+/* harmony import */ var nanoid__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! nanoid */ "./node_modules/nanoid/index.browser.js");
 
 
 
 
-var taskID = 1;
+
+
+// let taskID = 1;
+
 function createPageHeader(headerName) {
   var sectionContainer = document.querySelector("#sectionContainer");
   var pageHeaderTitle = document.createElement("h2");
@@ -117,10 +121,12 @@ function ProjectSection(project) {
     populateStorage();
   };
   projectDelete.onclick = function () {
-    // add delete fn here
     projectContainer.remove();
     (0,_Sidebar__WEBPACK_IMPORTED_MODULE_0__.removeFromProjectList)(project.title);
     populateStorage();
+    (0,_Sidebar__WEBPACK_IMPORTED_MODULE_0__.setTab)(null, true);
+    (0,_Sidebar__WEBPACK_IMPORTED_MODULE_0__.getTab)();
+    (0,_Sidebar__WEBPACK_IMPORTED_MODULE_0__.addProjectsToDOM)();
   };
   checkTaskList(project.tasks, project, projectSection, projectContainer);
   sectionContainer.append(projectContainer);
@@ -187,6 +193,9 @@ function ShowProjectContent(project) {
     // projectSection.remove();
     projectContainer.remove();
     (0,_Sidebar__WEBPACK_IMPORTED_MODULE_0__.removeFromProjectList)(project.title);
+    populateStorage();
+    (0,_Sidebar__WEBPACK_IMPORTED_MODULE_0__.setTab)(null, true);
+    (0,_Sidebar__WEBPACK_IMPORTED_MODULE_0__.getTab)();
     (0,_Sidebar__WEBPACK_IMPORTED_MODULE_0__.addProjectsToDOM)();
   };
   sectionContainer.append(projectContainer);
@@ -295,12 +304,6 @@ function createTaskBlock(element, project) {
       return task.name === element.name;
     });
     project.tasks[currentTask] = element;
-    console.log(element);
-    console.log(project.tasks);
-    // const currentProject = projectList.findIndex(
-    //   (proj) => proj.Id === project.Id
-    // );
-
     _Sidebar__WEBPACK_IMPORTED_MODULE_0__.projectList[getCurrentProjectIndex(project)] = project;
     populateStorage();
   };
@@ -317,13 +320,15 @@ function createTaskBlock(element, project) {
     // remove from app
     project.tasks.splice(currentIndex, 1);
     _Sidebar__WEBPACK_IMPORTED_MODULE_0__.projectList[getCurrentProjectIndex(project)] = project;
+    populateStorage();
+    (0,_Sidebar__WEBPACK_IMPORTED_MODULE_0__.setTab)(project);
+    (0,_Sidebar__WEBPACK_IMPORTED_MODULE_0__.getTab)();
     if (project.tasks.length === 0) {
       // show here
       removeElement("#addProjTask");
       // showEmptyInbox(projectSection);
       showEmptyInbox(project, projectSection, projectContainer);
     }
-    populateStorage();
   };
 
   // console.log(projectContainer);
@@ -429,7 +434,8 @@ function createAddTask(project, projectContainer) {
 
       // console.log("TASK ADD CURRENT TAB: ", currentTab);
       // DOM Logic here
-      showCurrentTabContent(project);
+      // showCurrentTabContent(project);
+      (0,_Sidebar__WEBPACK_IMPORTED_MODULE_0__.getTab)();
     };
     var taskCancelBtn = document.createElement("button");
     taskCancelBtn.classList.add("task__button");
@@ -586,18 +592,19 @@ function addToProjectTasks(project, name) {
       desc: desc.value,
       prio: prio.value,
       date: date.value,
-      id: taskID,
+      id: (0,nanoid__WEBPACK_IMPORTED_MODULE_5__.nanoid)(),
       completed: false
     });
-    _Sidebar__WEBPACK_IMPORTED_MODULE_0__.projectList[getCurrentProjectIndex(project)] = project;
-    taskID++;
 
+    // taskID++;
     // DOM
     // console.log(valid, validation);
 
     input.remove();
     createTaskUI(project.tasks, project, projectContainer, false, false);
+    _Sidebar__WEBPACK_IMPORTED_MODULE_0__.projectList[getCurrentProjectIndex(project)] = project;
     populateStorage();
+    (0,_Sidebar__WEBPACK_IMPORTED_MODULE_0__.setTab)(project);
   }
 }
 function createAddTaskBtnRow(project) {
@@ -637,7 +644,7 @@ function sortTasksAscending(tasks) {
   // App
 
   var sortedTasks = tasks.sort(function (a, b) {
-    return (0,date_fns__WEBPACK_IMPORTED_MODULE_5__["default"])(a.date) - (0,date_fns__WEBPACK_IMPORTED_MODULE_5__["default"])(b.date);
+    return (0,date_fns__WEBPACK_IMPORTED_MODULE_6__["default"])(a.date) - (0,date_fns__WEBPACK_IMPORTED_MODULE_6__["default"])(b.date);
   });
   // const sortedTasks = tasks.sort((a, b) =>
   //   compareAsc(toDate(a.date), toDate(b.date))
@@ -697,10 +704,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "currentTab": () => (/* binding */ currentTab),
 /* harmony export */   "default": () => (/* binding */ Sidebar),
 /* harmony export */   "getTab": () => (/* binding */ getTab),
-/* harmony export */   "id": () => (/* binding */ id),
 /* harmony export */   "projectList": () => (/* binding */ projectList),
 /* harmony export */   "removeFromProjectList": () => (/* binding */ removeFromProjectList),
 /* harmony export */   "setProjects": () => (/* binding */ setProjects),
+/* harmony export */   "setTab": () => (/* binding */ setTab),
 /* harmony export */   "updateProjectInput": () => (/* binding */ updateProjectInput)
 /* harmony export */ });
 /* harmony import */ var _assets_inbox_png__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../assets/inbox.png */ "./src/assets/inbox.png");
@@ -710,7 +717,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _assets_edit_png__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../assets/edit.png */ "./src/assets/edit.png");
 /* harmony import */ var _assets_delete_png__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../assets/delete.png */ "./src/assets/delete.png");
 /* harmony import */ var _ProjectSection__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./ProjectSection */ "./src/components/ProjectSection.js");
-/* harmony import */ var date_fns__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! date-fns */ "./node_modules/date-fns/esm/format/index.js");
+/* harmony import */ var date_fns__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! date-fns */ "./node_modules/date-fns/esm/format/index.js");
+/* harmony import */ var nanoid__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! nanoid */ "./node_modules/nanoid/index.browser.js");
 
 
 
@@ -719,8 +727,9 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-var projectList = [],
-  id = 1;
+
+var projectList = [];
+// id = 1;
 var currentTab = "Inbox";
 function sideBarItem(icon, name, id) {
   var sideBarItem = document.createElement("section");
@@ -882,7 +891,7 @@ function addProjectButtons(input) {
       console.log(findCurrentProject);
       (0,_ProjectSection__WEBPACK_IMPORTED_MODULE_6__.showCurrentTabContent)(findCurrentProject);
     } else {
-      addProject(input.value);
+      (0,_ProjectSection__WEBPACK_IMPORTED_MODULE_6__["default"])(addProject(input.value));
     }
     addProjectsToDOM();
   };
@@ -937,22 +946,25 @@ function addToProjectList(project) {
 function addProject(projName) {
   // create factory function
   var project = {
-    Id: id,
+    Id: (0,nanoid__WEBPACK_IMPORTED_MODULE_7__.nanoid)(),
     title: projName,
-    tasks: [{
-      name: "Smile More",
-      desc: "",
-      prio: "High Priority",
-      // date: parseISO(format(new Date(), "yyyy-MM-dd")),
-      date: (0,date_fns__WEBPACK_IMPORTED_MODULE_7__["default"])(new Date(), "yyyy-MM-dd"),
-      id: 1
-    }, {
-      name: "Worry Less",
-      desc: "",
-      prio: "High Priority",
-      date: (0,date_fns__WEBPACK_IMPORTED_MODULE_7__["default"])(new Date(), "yyyy-MM-dd"),
-      id: 2
-    }],
+    tasks: [
+      // {
+      //   name: "Smile More",
+      //   desc: "",
+      //   prio: "High Priority",
+      //   // date: parseISO(format(new Date(), "yyyy-MM-dd")),
+      //   date: format(new Date(), "yyyy-MM-dd"),
+      //   id: 1,
+      // },
+      // {
+      //   name: "Worry Less",
+      //   desc: "",
+      //   prio: "High Priority",
+      //   date: format(new Date(), "yyyy-MM-dd"),
+      //   id: 2,
+      // },
+    ],
     section: function section(project) {
       // reference the project from the local storage
       (0,_ProjectSection__WEBPACK_IMPORTED_MODULE_6__["default"])(project);
@@ -964,7 +976,6 @@ function addProject(projName) {
       (0,_ProjectSection__WEBPACK_IMPORTED_MODULE_6__["default"])(project).textContent = inputField;
     }
   };
-  updateId();
   addToProjectList(project);
   return project;
 }
@@ -1090,22 +1101,31 @@ function createProjectItems(project) {
     removeFromProjectList(project.title);
     populateStorage();
     e.stopPropagation();
+    // When pressing delete, we then reload the tab
+    setTab(null, true);
+    getTab();
   };
   ProjectInputContainer.onclick = function () {
     // Clear Elements from Section container before adding new elements
     setCurrentTab("Project");
     console.log(project);
-    // project.section(project);
-    (0,_ProjectSection__WEBPACK_IMPORTED_MODULE_6__["default"])(project);
-    setTab(project);
+    // get the most current version of the project
+    var currentProjectList = JSON.parse(localStorage.getItem("projectListStorage"));
+    var currentProject = currentProjectList.find(function (proj) {
+      return proj.Id === project.Id;
+    });
+    (0,_ProjectSection__WEBPACK_IMPORTED_MODULE_6__["default"])(currentProject);
+    setTab(currentProject);
   };
   return {
     ProjectInputContainer: ProjectInputContainer
   };
 }
-function updateId() {
-  id++;
-}
+
+// function updateId() {
+//   id++;
+// }
+
 function removeItemfromDOM(item) {
   document.querySelector(item).remove();
 }
@@ -1117,13 +1137,15 @@ function clearSectionContainer() {
   }
 }
 window.onload = function () {
-  // the problem may be here
   if (localStorage.getItem("hasCodeRunBefore") === null) {
     addProject("General Tasks");
+    addInitialTasks();
     addProjectsToDOM();
     addAllTasks();
     populateStorage();
     localStorage.setItem("hasCodeRunBefore", true);
+    setTab(null, true);
+    getTab();
   } else {
     projectList = JSON.parse(localStorage.getItem("projectListStorage"));
     setProjects();
@@ -1134,17 +1156,13 @@ window.onload = function () {
 // use this FN to put the project list on local storage
 
 function populateStorage() {
-  // localStorage.setItem("projectListStorage", projectList
-  // projectList = JSON.parse(localStorage.getItem("projectListStorage"))
-  console.log(projectList);
   localStorage.setItem("projectListStorage", JSON.stringify(projectList));
-  // localStorage.setItem("projectListStorage", projectList);
 }
-
 function setTab() {
   var project = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
-  console.log("CURRENT TAB:", currentTab);
+  var deletedTab = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
   localStorage.setItem("currentTab", currentTab);
+  deletedTab === true ? localStorage.setItem("currentTab", "Inbox") : localStorage.setItem("currentTab", currentTab);
   localStorage.setItem("currentProject", JSON.stringify(project));
 }
 function getTab() {
@@ -1153,7 +1171,6 @@ function getTab() {
   console.log(currentTab, "DEPOTA");
   switch (currentTab) {
     case "Inbox":
-      console.log("bobo inbox");
       addAllTasks();
       break;
     case "Today":
@@ -1166,11 +1183,7 @@ function getTab() {
       (0,_ProjectSection__WEBPACK_IMPORTED_MODULE_6__["default"])(currentProject);
   }
 }
-// use this fn to get projects from the local storage
-// and put render it to the dom
 function setProjects() {
-  // const projectList2 = localStorage.getItem("projectListStorage");
-  // console.log(JSON.parse(localStorage.getItem("projectListStorage")));
   addProjectsToDOM();
 }
 
@@ -1181,6 +1194,30 @@ function updateProjectTitle(project, projTitle) {
   (0,_ProjectSection__WEBPACK_IMPORTED_MODULE_6__["default"])(project).textContent = projTitle;
   projectList[(0,_ProjectSection__WEBPACK_IMPORTED_MODULE_6__.getCurrentProjectIndex)(project)] = project;
   populateStorage();
+}
+
+// TODO: fix add task bug
+
+function addInitialTasks() {
+  var currentProjectList = JSON.parse(localStorage.getItem("projectListStorage"));
+  var genTasks = currentProjectList.find(function (project) {
+    return project.title === "General Tasks";
+  });
+  genTasks.tasks.push({
+    name: "Smile More",
+    desc: "",
+    prio: "High Priority",
+    // date: parseISO(format(new Date(), "yyyy-MM-dd")),
+    date: (0,date_fns__WEBPACK_IMPORTED_MODULE_8__["default"])(new Date(), "yyyy-MM-dd"),
+    id: 1
+  }, {
+    name: "Worry Less",
+    desc: "",
+    prio: "High Priority",
+    date: (0,date_fns__WEBPACK_IMPORTED_MODULE_8__["default"])(new Date(), "yyyy-MM-dd"),
+    id: 2
+  });
+  projectList[(0,_ProjectSection__WEBPACK_IMPORTED_MODULE_6__.getCurrentProjectIndex)(genTasks)] = genTasks;
 }
 
 /***/ }),
@@ -5421,6 +5458,74 @@ module.exports = __webpack_require__.p + "today.png";
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 module.exports = __webpack_require__.p + "upcoming.png";
+
+/***/ }),
+
+/***/ "./node_modules/nanoid/index.browser.js":
+/*!**********************************************!*\
+  !*** ./node_modules/nanoid/index.browser.js ***!
+  \**********************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "customAlphabet": () => (/* binding */ customAlphabet),
+/* harmony export */   "customRandom": () => (/* binding */ customRandom),
+/* harmony export */   "nanoid": () => (/* binding */ nanoid),
+/* harmony export */   "random": () => (/* binding */ random),
+/* harmony export */   "urlAlphabet": () => (/* reexport safe */ _url_alphabet_index_js__WEBPACK_IMPORTED_MODULE_0__.urlAlphabet)
+/* harmony export */ });
+/* harmony import */ var _url_alphabet_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./url-alphabet/index.js */ "./node_modules/nanoid/url-alphabet/index.js");
+
+let random = bytes => crypto.getRandomValues(new Uint8Array(bytes))
+let customRandom = (alphabet, defaultSize, getRandom) => {
+  let mask = (2 << (Math.log(alphabet.length - 1) / Math.LN2)) - 1
+  let step = -~((1.6 * mask * defaultSize) / alphabet.length)
+  return (size = defaultSize) => {
+    let id = ''
+    while (true) {
+      let bytes = getRandom(step)
+      let j = step
+      while (j--) {
+        id += alphabet[bytes[j] & mask] || ''
+        if (id.length === size) return id
+      }
+    }
+  }
+}
+let customAlphabet = (alphabet, size = 21) =>
+  customRandom(alphabet, size, random)
+let nanoid = (size = 21) =>
+  crypto.getRandomValues(new Uint8Array(size)).reduce((id, byte) => {
+    byte &= 63
+    if (byte < 36) {
+      id += byte.toString(36)
+    } else if (byte < 62) {
+      id += (byte - 26).toString(36).toUpperCase()
+    } else if (byte > 62) {
+      id += '-'
+    } else {
+      id += '_'
+    }
+    return id
+  }, '')
+
+
+/***/ }),
+
+/***/ "./node_modules/nanoid/url-alphabet/index.js":
+/*!***************************************************!*\
+  !*** ./node_modules/nanoid/url-alphabet/index.js ***!
+  \***************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "urlAlphabet": () => (/* binding */ urlAlphabet)
+/* harmony export */ });
+const urlAlphabet =
+  'useandom-26T198340PX75pxJACKVERYMINDBUSHWOLF_GQZbfghjklqvwyzrict'
+
 
 /***/ })
 

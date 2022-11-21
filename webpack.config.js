@@ -56,6 +56,7 @@ module.exports = {
       title: "TheDoList",
       filename: "index.html",
       template: "src/template.html",
+      favicon: "src/assets/favicon.ico",
     }),
     new BundleAnalyzerPlugin(),
   ],

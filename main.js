@@ -69,9 +69,6 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-
-// let taskID = 1;
-
 function createPageHeader(headerName) {
   var sectionContainer = document.querySelector("#sectionContainer");
   var pageHeaderTitle = document.createElement("h2");
@@ -83,7 +80,6 @@ function createPageHeader(headerName) {
 function ProjectSection(project) {
   var sectionContainer = document.querySelector("#sectionContainer");
   (0,_Sidebar__WEBPACK_IMPORTED_MODULE_0__.clearSectionContainer)();
-  // removeTasks();
 
   // Project Container
   var projectContainer = document.createElement("div");
@@ -104,18 +100,15 @@ function ProjectSection(project) {
   projectDelete.src = _assets_delete_png__WEBPACK_IMPORTED_MODULE_2__;
   projectDelete.classList.add("sidebar__icon", "sidebar__icon--small");
   var projectOptions = document.createElement("div");
-  // projectOptions.classList.add("sidebar__project--option", "hidden");
   projectOptions.classList.add("sidebar__project--option", "border--bottom");
   projectOptions.append(projectEdit, projectDelete);
   var projectSection = document.createElement("div");
   projectSection.classList.add("project");
   projectSection.append(projectHeader);
   projectHeader.append(projectTitle, projectOptions);
-  // console.log(projectHeader);
   projectSection.append(projectHeader);
   projectContainer.append(projectSection);
   projectEdit.onclick = function () {
-    // add edit fn here
     projectHeader.after((0,_Sidebar__WEBPACK_IMPORTED_MODULE_0__.updateProjectInput)(project.title, project.Id, projectContainer, projectHeader));
     projectHeader.remove();
     populateStorage();
@@ -171,7 +164,6 @@ function ShowProjectContent(project) {
   projectDelete.src = _assets_delete_png__WEBPACK_IMPORTED_MODULE_2__;
   projectDelete.classList.add("sidebar__icon", "sidebar__icon--small");
   var projectOptions = document.createElement("div");
-  // projectOptions.classList.add("sidebar__project--option", "hidden");
   projectOptions.classList.add("sidebar__project--option", "border--bottom");
   project.title === "General Tasks" ? projectOptions.append(projectEdit) : projectOptions.append(projectEdit, projectDelete);
   projectHeader.append(projectTitle, projectOptions);
@@ -180,17 +172,13 @@ function ShowProjectContent(project) {
   var projectSection = document.createElement("div");
   projectSection.classList.add("project");
   projectSection.append(projectHeader);
-  // just show the tasks here
   projectContainer.append(projectSection);
   createTaskUI(project.tasks, project, projectContainer, today, incoming);
   projectEdit.onclick = function () {
-    // add edit fn here
     projectHeader.after((0,_Sidebar__WEBPACK_IMPORTED_MODULE_0__.updateProjectInput)(project.title, project.Id));
     projectHeader.remove();
   };
   projectDelete.onclick = function () {
-    // add delete fn here
-    // projectSection.remove();
     projectContainer.remove();
     (0,_Sidebar__WEBPACK_IMPORTED_MODULE_0__.removeFromProjectList)(project.title);
     populateStorage();
@@ -204,21 +192,11 @@ function removeTasks() {
   var projectContainer = document.querySelector("project__container");
   if (!projectContainer) return;
   var projectTasks = Array.from(document.querySelectorAll(".task__container"));
-
-  // while (projectContainer.firstChild) {
-  //   projectContainer.removeChild(projectContainer.firstChild);
-  // }
   projectTasks.forEach(function (task) {
     return task.remove();
   });
 }
-
-// const projectContainer = document.createElement("div");
-// projectContainer.id = "projectContainer";
-
-function createTaskUI(tasks, project,
-// projectContainer = document.querySelector("project__container"),
-projectContainer) {
+function createTaskUI(tasks, project, projectContainer) {
   var today = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
   var incoming = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : false;
   createTaskContainer(sortTasksAscending(tasks), project, projectContainer, today, incoming);
@@ -226,7 +204,6 @@ projectContainer) {
   sectionContainer.append(projectContainer);
 }
 function createTaskContainer(tasks, project, projectContainer, today, incoming) {
-  // Decides here kung anong
   tasks.map(function (element) {
     if (element.completed) return;
     if (!today && !incoming) {
@@ -276,7 +253,6 @@ function createTaskBlock(element, project) {
   textInput.classList.add("task__container--text");
   textInput.append(taskTitle, taskDesc, selectContainer);
   var taskOptions = document.createElement("div");
-  // taskOptions.classList.add("sidebar__project--option", "hidden");
   taskOptions.classList.add("sidebar__project--option");
   var taskEdit = new Image();
   taskEdit.src = _assets_edit_png__WEBPACK_IMPORTED_MODULE_1__;
@@ -285,10 +261,7 @@ function createTaskBlock(element, project) {
     removeElement("#addProjTask");
     taskContainer.after(updateTask(element, project, projectContainer));
     taskContainer.remove();
-    console.log(_Sidebar__WEBPACK_IMPORTED_MODULE_0__.projectList);
-    // populateStorage();
   };
-
   var taskDelete = new Image();
   taskDelete.src = _assets_delete_png__WEBPACK_IMPORTED_MODULE_2__;
   taskDelete.classList.add("sidebar__icon", "sidebar__icon--small");
@@ -324,14 +297,10 @@ function createTaskBlock(element, project) {
     (0,_Sidebar__WEBPACK_IMPORTED_MODULE_0__.setTab)(project);
     (0,_Sidebar__WEBPACK_IMPORTED_MODULE_0__.getTab)();
     if (project.tasks.length === 0) {
-      // show here
       removeElement("#addProjTask");
-      // showEmptyInbox(projectSection);
       showEmptyInbox(project, projectSection, projectContainer);
     }
   };
-
-  // console.log(projectContainer);
   projectContainer.append(taskContainer);
 }
 function checkPriority(priority) {
@@ -354,15 +323,9 @@ function createAddTaskBtn(project, projectContainer) {
   addProjectIcon.textContent = "add_circle";
   projectAddTaskBtn.textContent = "Add Task";
   projectAddTaskBtn.append(addProjectIcon);
-
-  // add on click here
   projectAddTaskBtn.onclick = function () {
-    // remove empty text and btn
     removeElement(".project__text--prompt");
     removeElement(".project__button--add");
-    // show add task ui
-
-    // projectContainer.append(createAddTask(project, projectContainer));
     createAddTask(project, projectContainer);
   };
   return projectAddTaskBtn;
@@ -416,7 +379,6 @@ function createAddTask(project, projectContainer) {
   projectContainer.append(mainTaskContainer);
   return mainTaskContainer;
   function createAddTaskOptions(project, projectContainer) {
-    console.log("PROJECT CONTAINER HERE:", projectContainer);
     var taskContainer = document.createElement("div");
     taskContainer.classList.add("task__container", "task__container--options");
     var taskAddBtn = document.createElement("button");
@@ -431,10 +393,6 @@ function createAddTask(project, projectContainer) {
       addToProjectTasks(project, taskName, taskDesc, taskPriority, taskDate, mainTaskContainer, projectContainer);
       removeElement("#addProjTask");
       removeTasks();
-
-      // console.log("TASK ADD CURRENT TAB: ", currentTab);
-      // DOM Logic here
-      // showCurrentTabContent(project);
       (0,_Sidebar__WEBPACK_IMPORTED_MODULE_0__.getTab)();
     };
     var taskCancelBtn = document.createElement("button");
@@ -500,7 +458,6 @@ function updateTask(element, project, projectContainer) {
   taskContainer.append(taskName, taskDesc, selectContainer);
   var mainTaskContainer = document.createElement("div");
   mainTaskContainer.id = "inputContainer";
-  // mainTaskContainer.append(taskContainer, createAddTaskOptions(project));
   mainTaskContainer.append(taskContainer, createUpdateTaskOptions(element, project, projectContainer));
   return mainTaskContainer;
   function createUpdateTaskOptions(element, project) {
@@ -512,14 +469,11 @@ function updateTask(element, project, projectContainer) {
     taskSaveBtn.onclick = function () {
       // app logic
       updateCurrentTask(element, taskName.value, taskDesc.value, taskPriority.value, taskDate.value);
-      console.log(element);
       var currentTask = project.tasks.findIndex(function (task) {
         return task.name === element.name;
       });
       project.tasks[currentTask] = element;
       _Sidebar__WEBPACK_IMPORTED_MODULE_0__.projectList[getCurrentProjectIndex(project)] = project;
-
-      // THIS IS WHERE MAGLAGAY TAYO NG FUCKING LOGIC FOR THE CURRE
       removeTasks();
       populateStorage();
       showCurrentTabContent(project);
@@ -548,7 +502,6 @@ function addTaskPriority(priority, className) {
   return option;
 }
 function setTaskPriorityColor(element) {
-  console.log(element.value);
   switch (element.value) {
     case "High Priority":
       element.style.color = "#d1453b";
@@ -560,8 +513,6 @@ function setTaskPriorityColor(element) {
       element.style.color = "#837d7d";
   }
 }
-
-// App Logic for Adding to Project Task
 function addToProjectTasks(project, name) {
   var desc = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : "";
   var prio = arguments.length > 3 ? arguments[3] : undefined;
@@ -595,11 +546,6 @@ function addToProjectTasks(project, name) {
       id: (0,nanoid__WEBPACK_IMPORTED_MODULE_5__.nanoid)(),
       completed: false
     });
-
-    // taskID++;
-    // DOM
-    // console.log(valid, validation);
-
     input.remove();
     createTaskUI(project.tasks, project, projectContainer, false, false);
     _Sidebar__WEBPACK_IMPORTED_MODULE_0__.projectList[getCurrentProjectIndex(project)] = project;
@@ -617,17 +563,12 @@ function createAddTaskBtnRow(project) {
   addTaskBtnRow.textContent = "Add Task";
   addTaskBtnRow.id = "addProjTask";
   addTaskBtnRow.append(addProjectIcon);
-
-  // console.log(projectContainer);
-  // Add functionality
   addTaskBtnRow.onclick = function () {
     addTaskBtnRow.remove();
     createAddTask(project, projectContainer);
   };
   return addTaskBtnRow;
 }
-
-// App Logic => Updating Task
 function updateCurrentTask(element, name, desc, prio, date) {
   element.name = name;
   element.desc = desc;
@@ -635,24 +576,10 @@ function updateCurrentTask(element, name, desc, prio, date) {
   element.date = date;
   return element;
 }
-
-// TODO: create empty tabs for projects
-
 function sortTasksAscending(tasks) {
-  // console.log("before");
-  // console.table(tasks);
-  // App
-
   var sortedTasks = tasks.sort(function (a, b) {
     return (0,date_fns__WEBPACK_IMPORTED_MODULE_6__["default"])(a.date) - (0,date_fns__WEBPACK_IMPORTED_MODULE_6__["default"])(b.date);
   });
-  // const sortedTasks = tasks.sort((a, b) =>
-  //   compareAsc(toDate(a.date), toDate(b.date))
-  // );
-
-  // console.log("after");
-  // console.table(sortedTasks);
-
   return sortedTasks;
 }
 function showCurrentTabContent(project) {
@@ -663,17 +590,10 @@ function showCurrentTabContent(project) {
   } else if (_Sidebar__WEBPACK_IMPORTED_MODULE_0__.currentTab === "Upcoming") {
     (0,_Sidebar__WEBPACK_IMPORTED_MODULE_0__.addUpcomingTasks)();
   } else {
-    // project.section(project);
     ProjectSection(project);
   }
 }
-
-// TODO: Local Storage
-// TODO: add number of tasks(?)
-
 function populateStorage() {
-  // localStorage.setItem("projectListStorage", projectList)
-
   localStorage.setItem("projectListStorage", JSON.stringify(_Sidebar__WEBPACK_IMPORTED_MODULE_0__.projectList));
   console.log(JSON.parse(localStorage.getItem("projectListStorage")));
 }
@@ -682,8 +602,6 @@ function getCurrentProjectIndex(project) {
     return proj.Id === project.Id;
   });
 }
-
-// TODO: LOCAL STORAGE ON ADDING PROJECTS
 
 /***/ }),
 
@@ -729,7 +647,6 @@ __webpack_require__.r(__webpack_exports__);
 
 
 var projectList = [];
-// id = 1;
 var currentTab = "Inbox";
 function sideBarItem(icon, name, id) {
   var sideBarItem = document.createElement("section");
@@ -744,14 +661,9 @@ function sideBarItem(icon, name, id) {
   sideBarItem.append(sideBarItemImage, sideBarItemText);
   return sideBarItem;
 }
-
-// Approve
-// Creates the sidebar items
 function createSideBarItems() {
   var inbox = sideBarItem(_assets_inbox_png__WEBPACK_IMPORTED_MODULE_0__, "Inbox", "inbox");
-  // TODO Create Today Section
   var today = sideBarItem(_assets_today_png__WEBPACK_IMPORTED_MODULE_1__, "Today", "upcoming");
-  // TODO Create Upcoming Section
   var upcoming = sideBarItem(_assets_upcoming_png__WEBPACK_IMPORTED_MODULE_2__, "Upcoming", "upcoming");
   var taskGroup = document.createElement("div");
   taskGroup.append(inbox, today, upcoming);
@@ -801,25 +713,16 @@ function setCurrentTab(tab) {
   currentTab = tab;
   setTab();
 }
-
-// Approve
-// Creates the Project Section of the Sidebar
 function createSideBarProject(projectGroup) {
   projectGroup.append(createSideBarProjectHeader(), addProjectBtn());
   return projectGroup;
 }
-
-// Approve
-// Creates the Header of the Project Section of the Sidebar
 function createSideBarProjectHeader() {
   var projectMainTitle = document.createElement("p");
   projectMainTitle.textContent = "Projects";
   projectMainTitle.classList.add("sidebar__text--main");
   return projectMainTitle;
 }
-
-// Approve
-// Adds the Add Project Btn to the Sidebar
 function addProjectBtn() {
   var addProjectBtn = document.createElement("button");
   addProjectBtn.classList.add("sidebar__button--add");
@@ -834,9 +737,6 @@ function addProjectBtn() {
   };
   return addProjectBtn;
 }
-
-// Approve
-// Adds the Project Title Input to the Sidebar
 function addProjectInput() {
   var addProjectInputContainer = document.createElement("div");
   addProjectInputContainer.classList.add("sidebar__input--container");
@@ -861,12 +761,6 @@ function updateProjectInput(userInput, taskID, projectContainer, projectHeader) 
   addProjectInputRow.append(addProjectInputContainer, addProjectButtons(addProjectInput, true, taskID, projectContainer, projectHeader));
   return addProjectInputRow;
 }
-
-// Create a creator function for addProjectButtons
-
-// Approve
-// Adds the project options button
-// TODO: Add Cancel button here
 function addProjectButtons(input) {
   var edit = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
   var taskID = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
@@ -896,7 +790,6 @@ function addProjectButtons(input) {
     addProjectsToDOM();
   };
   addProjectCancelBtn.onclick = function () {
-    // remove the current addproject then add the existing
     removeItemfromDOM(".addProjectInput");
     appendToProjectGroup(addProjectBtn());
     projectContainer.prepend(projectHeader);
@@ -904,9 +797,6 @@ function addProjectButtons(input) {
   };
   return addProjectInputButtons;
 }
-
-// Approve
-// Adds the project to Project Group
 function addProjectsToDOM() {
   clearDOM();
   appendToProjectGroup(createSideBarProjectHeader());
@@ -921,9 +811,6 @@ function addProjectsToDOM() {
   });
   appendToProjectGroup(addProjectBtn());
 }
-
-// Approve
-// Clears the Project Group Node
 function clearDOM() {
   var projectGroup = document.querySelector("#projectGroup");
   while (projectGroup.firstChild) {
@@ -940,11 +827,9 @@ function removeFromProjectList(input) {
 function addToProjectList(project) {
   projectList.push(project);
   populateStorage();
-  // console.log(projectList);
   return projectList;
 }
 function addProject(projName) {
-  // create factory function
   var project = {
     Id: (0,nanoid__WEBPACK_IMPORTED_MODULE_7__.nanoid)(),
     title: projName,
@@ -990,9 +875,6 @@ function Sidebar() {
   appendSideBarItems(sidebar);
   return sidebar;
 }
-
-// Refactored Code:
-
 function appendToProjectGroup() {
   var projectGroup = document.querySelector("#projectGroup");
   for (var _len = arguments.length, item = new Array(_len), _key = 0; _key < _len; _key++) {
@@ -1077,13 +959,7 @@ function createProjectItems(project) {
   ProjectInputContainer.onmouseleave = function () {
     ProjectOptions.classList.add("hidden");
   };
-
-  // TODO: Add Edit functionality
   ProjectEdit.onclick = function (e) {
-    // removing dom elements
-
-    // removeItemfromDOM(".sidebar__button--add");
-
     var sideBarItems = Array.from(document.querySelectorAll(".sidebar__input--container"));
     var currentItem = sideBarItems.find(function (item) {
       return item.textContent === project.title;
@@ -1121,11 +997,6 @@ function createProjectItems(project) {
     ProjectInputContainer: ProjectInputContainer
   };
 }
-
-// function updateId() {
-//   id++;
-// }
-
 function removeItemfromDOM(item) {
   document.querySelector(item).remove();
 }
@@ -1152,9 +1023,6 @@ window.onload = function () {
     getTab();
   }
 };
-
-// use this FN to put the project list on local storage
-
 function populateStorage() {
   localStorage.setItem("projectListStorage", JSON.stringify(projectList));
 }
@@ -1186,18 +1054,12 @@ function getTab() {
 function setProjects() {
   addProjectsToDOM();
 }
-
-// localStorage.clear();
-
 function updateProjectTitle(project, projTitle) {
   project.title = projTitle;
   (0,_ProjectSection__WEBPACK_IMPORTED_MODULE_6__["default"])(project).textContent = projTitle;
   projectList[(0,_ProjectSection__WEBPACK_IMPORTED_MODULE_6__.getCurrentProjectIndex)(project)] = project;
   populateStorage();
 }
-
-// TODO: fix add task bug
-
 function addInitialTasks() {
   var currentProjectList = JSON.parse(localStorage.getItem("projectListStorage"));
   var genTasks = currentProjectList.find(function (project) {
@@ -1207,7 +1069,6 @@ function addInitialTasks() {
     name: "Smile More",
     desc: "",
     prio: "High Priority",
-    // date: parseISO(format(new Date(), "yyyy-MM-dd")),
     date: (0,date_fns__WEBPACK_IMPORTED_MODULE_8__["default"])(new Date(), "yyyy-MM-dd"),
     id: 1
   }, {

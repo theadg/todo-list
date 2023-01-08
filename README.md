@@ -23,7 +23,7 @@ Build a Todo List that does the following:
 
 ### Links
 
-- Live Site URL: [https://theadg.github.io/admin-dashboard/]
+- Live Site URL: [https://theadg.github.io/todo-list/]
 
 ## My Process
 
